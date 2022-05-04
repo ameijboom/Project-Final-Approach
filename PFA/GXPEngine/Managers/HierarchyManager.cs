@@ -1,8 +1,4 @@
-using GXPEngine;
-using System.Collections.Generic;
-using System;
-
-namespace GXPEngine {
+namespace PFA.GXPEngine.Managers {
 	/// <summary>
 	/// If you are getting strange bugs because you are calling Destroy during the Update loop, 
 	/// you can use this class to do this more cleanly: when using 

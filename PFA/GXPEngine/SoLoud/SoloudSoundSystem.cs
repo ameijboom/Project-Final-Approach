@@ -1,7 +1,6 @@
-﻿using System;
-using GXPEngine.Core;
+﻿using PFA.GXPEngine.Core;
 
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.SoLoud
 {
     public class SoloudSoundSystem : SoundSystem
     {

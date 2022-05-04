@@ -1,6 +1,4 @@
-using System;
-
-namespace NeoGXP.GXPEngine.LinAlg
+namespace PFA.GXPEngine.LinAlg
 {
     public static class VecMath
     {

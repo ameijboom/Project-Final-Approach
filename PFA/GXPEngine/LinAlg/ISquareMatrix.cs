@@ -1,8 +1,8 @@
-namespace NeoGXP.GXPEngine.LinAlg
+namespace PFA.GXPEngine.LinAlg
 {
     public interface ISquareMatrix : IMatrix
     {
-         public ISquareMatrix UnitMatrix();
+         public void ToUnitMatrix();
 
          public float Trace();
          public float Determinant();
@@ -10,7 +10,7 @@ namespace NeoGXP.GXPEngine.LinAlg
          public IVec[] EigenVectors();
          public IMatrix Inverse();
          public bool IsDiagonal();
-         public bool IsTriangular();
+         public bool IsTriangular(bool upper);
          public bool IsSymmetric();
          public bool IsOrthogonal();
     }

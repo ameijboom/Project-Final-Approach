@@ -1,11 +1,8 @@
 ﻿//#define USE_FMOD_AUDIO
 
-using System;
-using System.Threading;
-using System.Collections.Generic;
-using GXPEngine.Core;
+using PFA.GXPEngine.Core;
 
-namespace GXPEngine
+namespace PFA.GXPEngine
 {
 	/// <summary>
 	/// The Sound Class represents a Sound resource in memory

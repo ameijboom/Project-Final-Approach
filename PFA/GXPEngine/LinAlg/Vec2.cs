@@ -3,12 +3,12 @@
 //  Except for the functions in this file that are either inspired by, or taken from Processing: https://github.com/processing/processing4/blob/master/core/src/processing/core/PVector.java
 // You're allowed to learn from this, but please do not simply copy.
 
-using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using NeoGXP.GXPEngine.LinAlg;
+using PFA.GXPEngine.Core;
+using PFA.GXPEngine.Utils;
 
-namespace GXPEngine.Core;
+namespace PFA.GXPEngine.LinAlg;
 
 //TODO: Polish up XML documentation
 public struct Vec2 : IVec
@@ -18,12 +18,6 @@ public struct Vec2 : IVec
 	public float x;
 	public float y;
 	// ReSharper restore InconsistentNaming
-
-	/// <summary>
-	/// When comparing values, the values can be off by this much in either direction
-	/// before it gets flagged as actually two different numbers
-	/// </summary>
-	private const float TOLERANCE = 0.0000001f;
 
     /// <summary>
     /// Constructs a new vector (defaults to (0, 0) )
@@ -177,8 +171,13 @@ public struct Vec2 : IVec
 	/// <returns>The modified vector</returns>
 	public Vec2 SetMag(float mag)
 	{
-		Normalize();
-		return this *= mag;
+		return SetMag(this, mag);
+	}
+
+	public static Vec2 SetMag(Vec2 v, float mag)
+	{
+		v.Normalize();
+		return v * mag;
 	}
 
 	/// <summary>
@@ -295,6 +294,23 @@ public struct Vec2 : IVec
 	{
 		Vec2 d = v1 - v2;
 		return d.MagSq();
+	}
+
+	/// <summary>
+	/// Reflect this vector around the given normal
+	/// </summary>
+	public Vec2 Reflect(Vec2 normal)
+	{
+		return this = Reflect(this, normal);
+	}
+
+	/// <summary>
+	/// Reflects a vector around a normal
+	/// </summary>
+	public static Vec2 Reflect(Vec2 toReflect, Vec2 normal)
+	{
+		normal.Normalize();
+		return toReflect - 2 * Dot(toReflect, normal) * normal;
 	}
 
 	/// <summary>
@@ -419,19 +435,19 @@ public struct Vec2 : IVec
 
 	public static bool operator ==(Vec2 left, Vec2 right)
 	{
-		return Math.Abs(left.x - right.x) < TOLERANCE && Math.Abs(left.y - right.y) < TOLERANCE;
+		return Math.Abs(left.x - right.x) < Mathf.TOLERANCE && Math.Abs(left.y - right.y) < Mathf.TOLERANCE;
 	}
 
 	public static bool operator !=(Vec2 left, Vec2 right)
 	{
-		return Math.Abs(left.x - right.x) > TOLERANCE || Math.Abs(left.y - right.y) > TOLERANCE;
+		return Math.Abs(left.x - right.x) > Mathf.TOLERANCE || Math.Abs(left.y - right.y) > Mathf.TOLERANCE;
 	}
 
-	public override bool Equals(object obj)
+	public override bool Equals(object? obj)
 	{
 		if (obj is not Vec2 vec2)
 			return false;
-		return Math.Abs(x - vec2.x) < TOLERANCE && Math.Abs(y - vec2.y) < TOLERANCE;
+		return Math.Abs(x - vec2.x) < Mathf.TOLERANCE && Math.Abs(y - vec2.y) < Mathf.TOLERANCE;
 	}
 
 	public override int GetHashCode()

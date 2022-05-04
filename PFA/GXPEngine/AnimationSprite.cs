@@ -1,8 +1,8 @@
-using System;
+using PFA.GXPEngine.Core;
+using PFA.GXPEngine.Utils;
 using SkiaSharp;
-using GXPEngine.Core;
 
-namespace GXPEngine
+namespace PFA.GXPEngine
 {
 	/// <summary>
 	/// Animated Sprite. Has all the functionality of a regular sprite, but supports multiple animation frames/subimages.

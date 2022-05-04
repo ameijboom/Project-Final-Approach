@@ -1,7 +1,7 @@
-﻿using System;
-using GXPEngine.Core;
+﻿using PFA.GXPEngine.LinAlg;
+using PFA.GXPEngine.Utils;
 
-namespace GXPEngine
+namespace PFA.GXPEngine.AddOns
 {
 	/**
 	 * Simple MouseHandler interface between the Input class and your own code, that turns the Input.mouseX Input.mouseY

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace GXPEngine.Core
+﻿namespace PFA.GXPEngine.Core
 {
     public abstract class SoundSystem
     {

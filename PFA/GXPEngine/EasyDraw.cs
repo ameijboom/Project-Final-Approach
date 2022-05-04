@@ -1,15 +1,16 @@
+using PFA.GXPEngine.Core;
 using SkiaSharp;
 
-namespace GXPEngine 
+namespace PFA.GXPEngine
 {
 	public enum CenterMode {Min, Center, Max}
 
 	/// <summary>
-	/// Creates an easy-to-use layer on top of .NET's System.Drawing methods.
-	/// The API is inspired by Processing: internal states are maintained for font, fill/stroke color, etc., 
+	/// Creates an easy-to-use layer on top of SkiaSharp's Drawing methods.
+	/// The API is inspired by Processing: internal states are maintained for font, fill/stroke colour, etc.,
 	/// and everything works with simple methods that have many overloads.
 	/// </summary>
-	public class EasyDraw : Canvas 
+	public class EasyDraw : Canvas
 	{
 		static SKFont defaultFont = new SKFont (SKTypeface.FromFamilyName("Noto Sans"), 15);
 
@@ -54,9 +55,8 @@ namespace GXPEngine
 			Initialize ();
 		}
 
-		void Initialize() 
+		private void Initialize()
 		{
-			// pen = new Pen (Color.White, 1);
 			pen = new SKPaint {
 				IsAntialias = !game.PixelArt,
 				Color = SKColors.White,
@@ -138,43 +138,18 @@ namespace GXPEngine
 		/// <summary>
 		/// Draw shapes without outline
 		/// </summary>
-		public void NoStroke() 
+		public void NoStroke()
 		{
 			_stroke=false;
 		}
 
 		/// <summary>
-		/// Set the outline color for drawing shapes
+		/// Set the outline colour for drawing shapes
 		/// </summary>
-		/// <param name="newColor">the color of the outline</param>
-		/// <param name="alpha">the opacity of the outline (from 0=transparent to 255=opaque)</param>
-		public void Stroke(SKColor newColor, byte alpha=255) 
+		/// <param name="newColour">the colour of the outline</param>
+		public void Stroke(Colour newColour)
 		{
-			pen.Color = new SKColor (newColor.Red, newColor.Green, newColor.Blue, alpha);
-			_stroke = true;
-		}
-
-		/// <summary>
-		/// Set the outline color for drawing shapes to a grayscale value
-		/// </summary>
-		/// <param name="grayScale">A grayscale value (from 0=black to 255=white)</param>
-		/// <param name="alpha">the opacity of the outline (from 0=transparent to 255=opaque)</param>
-		public void Stroke(byte grayScale, byte alpha=255) 
-		{
-			pen.Color = new SKColor(grayScale, grayScale, grayScale, alpha);
-			_stroke = true;
-		}
-
-		/// <summary>
-		/// Set the outline color for drawing shapes.
-		/// </summary>
-		/// <param name="red">The red value of the color (from 0 to 255)</param>
-		/// <param name="green">The green value of the color (from 0 to 255)</param>
-		/// <param name="blue">The blue value of the color (from 0 to 255)</param>
-		/// <param name="alpha">The opacity of the outline (from 0=transparent to 255=opaque)</param>
-		public void Stroke(byte red, byte green, byte blue, byte alpha=255) 
-		{
-			pen.Color = new SKColor(red, green, blue, alpha);
+			pen.Color = (SKColor) newColour;
 			_stroke = true;
 		}
 
@@ -182,7 +157,7 @@ namespace GXPEngine
 		/// Sets the width of the outline for drawing shapes. (Default value: 1)
 		/// </summary>
 		/// <param name="width">The width (in pixels)</param>
-		public void StrokeWeight(float width) 
+		public void StrokeWeight(float width)
 		{
 			pen.StrokeWidth = width;
 			_stroke = true;
@@ -191,7 +166,7 @@ namespace GXPEngine
 		//////////// Setting Fill
 
 		/// <summary>
-		/// Draw shapes without fill color.
+		/// Draw shapes without fill colour.
 		/// </summary>
 		public void NoFill() 
 		{
@@ -199,74 +174,28 @@ namespace GXPEngine
 		}
 
 		/// <summary>
-		/// Set the fill color for drawing shapes and text.
+		/// Set the fill colour for drawing shapes and text.
 		/// </summary>
-		/// <param name="newColor">the fill color</param>
-		/// <param name="alpha">the fill opacity (from 0=transparent to 255=opaque)</param>
-		public void Fill(SKColor newColor, byte alpha=255) 
+		/// <param name="newColour">the fill colour</param>
+		public void Fill(Colour newColour)
 		{
-			brush.Color = new SKColor(newColor.Red, newColor.Green, newColor.Blue, alpha);
-			_fill = true;
-		}
-
-		/// <summary>
-		/// Set the fill color for drawing shapes and text to a gray scale value.
-		/// </summary>
-		/// <param name="grayScale">gray scale value (from 0=black to 255=white)</param>
-		/// <param name="alpha">the fill opacity (from 0=transparent to 255=opaque)</param>
-		public void Fill(byte grayScale, byte alpha=255) 
-		{
-			brush.Color = new SKColor(grayScale, grayScale, grayScale, alpha);
-			_fill = true;
-		}
-
-		/// <summary>
-		/// Set the fill color for drawing shapes and text.
-		/// </summary>
-		/// <param name="red">The red value of the color (from 0 to 255)</param>
-		/// <param name="green">The green value of the color (from 0 to 255)</param>
-		/// <param name="blue">The blue value of the color (from 0 to 255)</param>
-		/// <param name="alpha">The fill opacity (from 0=transparent to 255=opaque)</param>
-		public void Fill(byte red, byte green, byte blue, byte alpha=255) 
-		{
-			brush.Color = new SKColor(red, green, blue, alpha);
+			brush.Color = (SKColor) newColour;
 			_fill = true;
 		}
 
 		//////////// Clear
 
 		/// <summary>
-		/// Clear the canvas with a given color
+		/// Clear the canvas with a given colour
 		/// </summary>
-		/// <param name="newColor">the clear color</param>
-		public void Clear(SKColor newColor) 
+		/// <param name="newColour">the clear colour</param>
+		public void Clear(Colour newColour)
 		{
-			graphics.Clear (newColor);
+			graphics.Clear((SKColor) newColour);
 		}
 
 		/// <summary>
-		/// Clear the canvas with a grayscale
-		/// </summary>
-		/// <param name="grayScale">the grayscale value (between 0=black and 255=white)</param>
-		public void Clear(byte grayScale) 
-		{
-			graphics.Clear(new SKColor(grayScale, grayScale, grayScale, 255));
-		}
-
-		/// <summary>
-		/// Clear the canvas with a given color.
-		/// </summary>
-		/// <param name="red">The red value of the clear color (from 0 to 255)</param>
-		/// <param name="green">The green value of the clear color (from 0 to 255)</param>
-		/// <param name="blue">The blue value of the clear color (from 0 to 255)</param>
-		/// <param name="alpha">The opacity of the clear color (from 0=transparent to 255=opaque)</param>
-		public void Clear(byte red, byte green, byte blue, byte alpha=255) 
-		{
-			graphics.Clear(new SKColor(red, green, blue, alpha));
-		}
-
-		/// <summary>
-		/// Clear the canvas with a transparent color. 
+		/// Clear the canvas with a transparent colour.
 		/// Note that this will fully clear the canvas, but will make the sprites behind the canvas visible.
 		/// </summary>
 		public void ClearTransparent() {
@@ -314,18 +243,14 @@ namespace GXPEngine
 		/// The text is aligned on the canvas using the current TextAlign values.
 		/// </summary>
 		/// <param name="text">The text to be rendered</param>
-		/// <param name="clear">Whether the canvas should be cleared before drawing the text</param>
-		/// <param name="clearAlpha">The opacity of the clear color (from 0=transparent to 255=opaque)</param>
-		/// <param name="clearRed">The red value of the clear color (0-255)</param>
-		/// <param name="clearGreen">The green value of the clear color (0-255)</param>
-		/// <param name="clearBlue">The blue value of the clear color (0-255)</param>
-		public void Text(string text, bool clear=false, byte clearAlpha=0, byte clearRed=0, byte clearGreen=0, byte clearBlue=0) {
-			if (clear) Clear(clearRed, clearGreen, clearBlue, clearAlpha);
+		/// <param name="clearColour">Pass this if the canvas should be cleared before drawing the text</param>
+		public void Text(string text, Colour clearColour=new()) {
+			if (clearColour != new Colour()) Clear(clearColour);
 			float tx = 0;
 			float ty = 0;
 			switch (HorizontalTextAlign) {
 				case CenterMode.Center:
-					tx = _texture.width/2;
+					tx = _texture.width/2f;
 					break;
 				case CenterMode.Max:
 					tx = _texture.width;
@@ -333,7 +258,7 @@ namespace GXPEngine
 			}
 			switch (VerticalTextAlign) {
 				case CenterMode.Center:
-					ty = _texture.height / 2;
+					ty = _texture.height / 2f;
 					break;
 				case CenterMode.Max:
 					ty = _texture.height;

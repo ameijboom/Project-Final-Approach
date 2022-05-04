@@ -1,6 +1,4 @@
-using System;
-
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.Core
 {
 	public struct Rectangle
 	{

@@ -1,7 +1,7 @@
-using System;
-using GXPEngine.Core;
+using PFA.GXPEngine.Core;
+using PFA.GXPEngine.LinAlg;
 
-namespace GXPEngine
+namespace PFA.GXPEngine.Utils
 {
 	/// <summary>
 	/// The Input class contains functions for reading keys and mouse

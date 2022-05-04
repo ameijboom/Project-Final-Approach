@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using SkiaSharp;
 using System.Runtime.InteropServices;
+using SkiaSharp;
 
-namespace GXPEngine
+namespace PFA.GXPEngine.Utils
 {
 	/// <summary>
 	/// The Utils class contains a number of useful functions.

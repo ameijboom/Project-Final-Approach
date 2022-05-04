@@ -1,4 +1,6 @@
-﻿namespace GXPEngine.Core 
+﻿using PFA.GXPEngine.LinAlg;
+
+namespace PFA.GXPEngine.Core 
 {	
 	/// <summary>
 	/// A class that contains info about collisions, such as returned by the MoveUntilCollision method.

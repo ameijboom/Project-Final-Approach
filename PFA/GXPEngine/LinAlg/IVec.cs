@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace NeoGXP.GXPEngine.LinAlg
+namespace PFA.GXPEngine.LinAlg
 {
     public interface IVec : IEnumerable, IEnumerator
     {

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PFA.GXPEngine.Core;
 
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.FMOD
 {
     public class FMODSoundSystem : SoundSystem
     {

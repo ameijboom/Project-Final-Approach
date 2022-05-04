@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-using GXPEngine.Core;
+using PFA.GXPEngine.Core;
+using PFA.GXPEngine.LinAlg;
+using PFA.GXPEngine.Managers;
 
-namespace GXPEngine
+namespace PFA.GXPEngine
 {
 	/// <summary>
 	/// GameObject is the base class for all display objects.

@@ -1,7 +1,7 @@
-using System;
-using GXPEngine.Core;
+using PFA.GXPEngine.LinAlg;
+using PFA.GXPEngine.Utils;
 
-namespace GXPEngine
+namespace PFA.GXPEngine.Core
 {
 	/// <summary>
 	/// The Transformable class contains all positional data of GameObjects.
@@ -54,7 +54,7 @@ namespace GXPEngine
 		/// <value>
 		/// The x.
 		/// </value>
-		private float x {
+		protected float x {
 			get { return _matrix[12]; }
 			set { _matrix[12] = value; }
 		}
@@ -81,7 +81,7 @@ namespace GXPEngine
 		/// <value>
 		/// The y.
 		/// </value>
-		private float y {
+		protected float y {
 			get { return _matrix[13]; }
 			set { _matrix[13] = value; }
 		}

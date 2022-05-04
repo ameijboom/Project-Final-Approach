@@ -1,6 +1,6 @@
-using System;
+using PFA.GXPEngine.LinAlg;
 
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.Core
 {
 	public class Collider
 	{

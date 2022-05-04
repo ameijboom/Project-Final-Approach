@@ -1,9 +1,8 @@
-using System;
-using GXPEngine.Core;
-using GXPEngine.Managers;
-using System.Collections.Generic;
+using PFA.GXPEngine.Core;
+using PFA.GXPEngine.LinAlg;
+using PFA.GXPEngine.Managers;
 
-namespace GXPEngine
+namespace PFA.GXPEngine
 {
 	/// <summary>
 	/// The Game class represents the Game window.

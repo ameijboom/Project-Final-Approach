@@ -1,7 +1,8 @@
 using Arqan;
-using GXPEngine.Core;
+using PFA.GXPEngine.Core;
+using PFA.GXPEngine.LinAlg;
 
-namespace GXPEngine {
+namespace PFA.GXPEngine.AddOns {
 	/// <summary>
 	/// A class that can be used to create "sub windows" (e.g. mini-map, splitscreen, etc).
 	/// This is not a gameobject. Instead, subscribe the RenderWindow method to the main game's 
@@ -175,7 +176,7 @@ namespace GXPEngine {
 				if (worldSpaceCorners[i].y < minY) minY = worldSpaceCorners[i].y;
 			}
 
-			Game.main.RenderRange = new GXPEngine.Core.Rectangle (minX, minY, maxX - minX, maxY - minY);
+			Game.main.RenderRange = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 		}
 	}
 }

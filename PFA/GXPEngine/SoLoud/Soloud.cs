@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.SoLoud
 {
     public static class Soloud
     {

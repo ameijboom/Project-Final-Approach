@@ -1,8 +1,6 @@
-using System.Diagnostics;
-using System;
 using Arqan;
 
-namespace GXPEngine
+namespace PFA.GXPEngine.Utils
 {
 	/// <summary>
 	/// Contains various time related functions.

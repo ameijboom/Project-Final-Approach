@@ -1,11 +1,8 @@
-using System;
 using System.Collections;
-
+using Arqan;
 using SkiaSharp;
 
-using Arqan;
-
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.Core
 {
 	public class Texture2D
 	{

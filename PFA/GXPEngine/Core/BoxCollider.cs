@@ -1,6 +1,7 @@
-using System;
+using PFA.GXPEngine.LinAlg;
+using PFA.GXPEngine.Utils;
 
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.Core
 {
 	public class BoxCollider : Collider
 	{

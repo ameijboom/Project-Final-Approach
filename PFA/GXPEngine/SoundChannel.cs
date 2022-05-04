@@ -1,7 +1,6 @@
-﻿using System;
-using GXPEngine.Core;
+﻿using PFA.GXPEngine.Core;
 
-namespace GXPEngine
+namespace PFA.GXPEngine
 {
 	/// <summary>
 	/// This class represents a sound channel on the soundcard.

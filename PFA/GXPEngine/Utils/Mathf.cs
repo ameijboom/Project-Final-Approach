@@ -1,12 +1,16 @@
-using System;
-
-namespace GXPEngine
+namespace PFA.GXPEngine.Utils
 {
 	/// <summary>
 	/// Contains several functions for doing floating point Math
 	/// </summary>
 	public static class Mathf
 	{
+		/// <summary>
+		/// When comparing values, the values can be off by this much in either direction
+		/// before it gets flagged as actually two different numbers
+		/// </summary>
+		public const float TOLERANCE = 0.0000001f;
+
 		/// <summary>
 		/// Constant PI
 		/// </summary>
@@ -127,7 +131,7 @@ namespace GXPEngine
 		public static int Min(int value1, int value2) {
 			return (value2<value1)?value2:value1;
 		}
-		
+
 		/// <summary>
 		/// Returns x raised to the power of y
 		/// </summary>
@@ -166,7 +170,7 @@ namespace GXPEngine
 		public static float Sin(float f) {
 			return (float)Math.Sin (f);
 		}
-		
+
 		/// <summary>
 		/// Returns the hyperbolic sine of the specified number
 		/// </summary>
@@ -187,7 +191,7 @@ namespace GXPEngine
 		public static float Tan(float f) {
 			return (float)Math.Tan (f);
 		}
-		
+
 		/// <summary>
 		/// Returns the hyperbolic tangent of the specified number
 		/// </summary>
@@ -231,6 +235,12 @@ namespace GXPEngine
 			return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
 		}
 
+		/// <summary>
+		/// Squares a number
+		/// </summary>
+		public static float Sq(float f) {
+			return f*f;
+		}
 	}
 }
 

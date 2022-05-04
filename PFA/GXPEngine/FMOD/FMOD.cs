@@ -1,8 +1,6 @@
-using System;
-using System.Security;
 using System.Runtime.InteropServices;
 
-namespace GXPEngine.Core
+namespace PFA.GXPEngine.FMOD
 {
 	public class FMOD
 	{

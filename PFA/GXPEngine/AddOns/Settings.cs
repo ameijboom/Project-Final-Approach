@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System;
-using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 
 /* Here is an example of a possible settings file (create a file settings.txt in bin/Debug, and copy the next lines to it):
 
@@ -25,7 +22,7 @@ SettingsFileName = settings.txt
 
 */
 
-namespace GXPEngine {
+namespace PFA.GXPEngine.AddOns {
 	/// <summary>
 	/// Static class that contains various settings, such as screen resolution and player controls. 
 	/// In your Main method, you can Call the Settings.Load() method to initialize these settings from a text file 

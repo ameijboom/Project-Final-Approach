@@ -1,6 +1,8 @@
-using GXPEngine.Core; // For Vector2
+using PFA.GXPEngine.LinAlg;
 
-namespace GXPEngine {
+// For Vector2
+
+namespace PFA.GXPEngine.AddOns {
 	/// <summary>
 	/// A Camera gameobject, that owns a rectangular render window, and determines the focal point, rotation and scale
 	/// of what's rendered in that window.

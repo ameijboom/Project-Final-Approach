@@ -1,5 +1,6 @@
 using Arqan;
-namespace GXPEngine
+
+namespace PFA.GXPEngine.Utils
 {
 	/// <summary>
 	/// Contains key definitions for usage with Input.GetKey and Input.GetKeyDown.
