@@ -10,13 +10,17 @@ namespace PFA.MyGame;
 
 public class Ball : GameObject
 {
+	public Vec2 oldPosition;
 	public Vec2 Velocity;
 	public Vec2 Acceleration;
 	public readonly float Radius;
 	public readonly float Mass;
 
+	public float fSimTimeRemaining;
+
 	public Ball(float x, float y, float radius)
 	{
+		oldPosition = new Vec2(x, y);
 		position = new Vec2(x, y);
 		Radius = radius; //TODO: Base this on the radius of a hydrogen atom, and make all other atoms have a relative radius to that.
 		Mass = radius * 10.0f; //TODO: Same for mass.
@@ -38,7 +42,7 @@ public class Ball : GameObject
 
 	public void Render()
 	{
-		Gizmos.DrawCircle(position, Radius, 20);
+		Gizmos.DrawCircle(position, Radius, 12);
 		Vec2 dir = Vec2.SetMag(Velocity, Radius);
 		if (dir == new Vec2())
 			dir = new Vec2(Radius, 0);

@@ -73,79 +73,113 @@ public class MyGame : Game
 
 		List<Tuple<Ball, Ball>> collidingPairs = new();
 
-		// Update Ball Positions
-		foreach (Ball ball in Balls)
+		const int nSimulationUpdates = 4;
+		float fSimElapsedTime = fElapsedTime / nSimulationUpdates;
+
+		const int nMaxSimulationSteps = 15;
+
+		// Main simulation loop
+		for (int i = 0; i < nSimulationUpdates; i++)
 		{
-			ball.Acceleration = -ball.Velocity * 0.8f; //drag
-			ball.Velocity += ball.Acceleration * fElapsedTime;
-			ball.position += ball.Velocity * fElapsedTime;
+			// Set all balls time to maximum for this epoch
+			foreach (Ball ball in Balls)
+				ball.fSimTimeRemaining = fSimElapsedTime;
 
-			if(ball.position.x < 0) ball.x += width;
-			if(ball.position.x >= width) ball.x -= width;
-			if(ball.position.y < 0) ball.y += height;
-			if(ball.position.y >= height) ball.y -= height;
-
-			if(ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
-		}
-
-		foreach (Ball ball in Balls)
-		{
-			foreach (Ball target in Balls)
+			for (int j = 0; j < nMaxSimulationSteps; j++)
 			{
-				if (ball != target)
+				// Update Ball Positions
+				foreach (Ball ball in Balls)
 				{
-					if (DoCirclesOverlap(ball, target)) //Static collision resolution
+					if (ball.fSimTimeRemaining > 0.0f)
 					{
-						// Collision has occured
-						collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
+						ball.oldPosition = ball.position;
 
-						// Distance between ball centers
-						float fDistance = Vec2.Dist(ball.position, target.position);
-						float fOverlap = 0.5f * (fDistance - ball.Radius - target.Radius);
+						// Add Drag to emulate rolling friction
+						ball.Acceleration = -ball.Velocity * 0.8f;
 
-						// Displace Current Ball
-						ball.position -= fOverlap * (ball.position - target.position) / fDistance;
+						// Update Ball Physics
+						ball.Velocity += ball.Acceleration * ball.fSimTimeRemaining;
+						ball.position += ball.Velocity * ball.fSimTimeRemaining;
 
-						// Displace Target Ball
-						target.position += fOverlap * (ball.position - target.position) / fDistance;
+						// Wrap the balls around the screen
+						if (ball.position.x < 0) ball.x += width;
+						if (ball.position.x >= width) ball.x -= width;
+						if (ball.position.y < 0) ball.y += height;
+						if (ball.position.y >= height) ball.y -= height;
+
+						if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
 					}
 				}
+
+				// Static collisions, i.e. overlap
+				foreach (Ball ball in Balls)
+				{
+					foreach (Ball target in Balls)
+					{
+						if (ball != target)
+						{
+							if (DoCirclesOverlap(ball, target)) //Static collision resolution
+							{
+								// Collision has occured
+								collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
+
+								// Distance between ball centers
+								float fDistance = Vec2.Dist(ball.position, target.position);
+								float fOverlap = 0.5f * (fDistance - ball.Radius - target.Radius);
+
+								// Displace Current Ball
+								ball.position -= fOverlap * (ball.position - target.position) / fDistance;
+
+								// Displace Target Ball
+								target.position += fOverlap * (ball.position - target.position) / fDistance;
+							}
+						}
+					}
+
+					// Time displacement
+					float fIntendedSpeed = ball.Velocity.Mag();
+					float fIntendedDistance = fIntendedSpeed * ball.fSimTimeRemaining;
+					float fActualDistance = Vec2.Dist(ball.position, ball.oldPosition);
+					float fActualTime = fActualDistance / fIntendedSpeed;
+
+					ball.fSimTimeRemaining -= fActualTime;
+				}
+
+				// Now work out dynamic collisions
+				foreach ((Ball b1, Ball b2) in collidingPairs)
+				{
+					// Distance between balls
+					float fDistance = Vec2.Dist(b1.position, b2.position);
+
+					// Normal
+					Vec2 n = (b2.position - b1.position) / fDistance;
+
+					// Tangent
+					// Vec2 t = n.GetNormal();
+
+					// Dot Product Tangents
+					// float dpTan1 = Vec2.Dot(b1.Velocity, t);
+					// float dpTan2 = Vec2.Dot(b2.Velocity, t);
+
+					// Dot Product Normal
+					// float dpNorm1 = Vec2.Dot(b1.Velocity, n);
+					// float dpNorm2 = Vec2.Dot(b2.Velocity, n);
+
+					// Conservation of momentum in 1D
+					// float m1 = (dpNorm1 * (b1.Mass - b2.Mass) + 2.0f * b2.Mass * dpNorm2) / (b1.Mass + b2.Mass);
+					// float m2 = (dpNorm2 * (b2.Mass - b1.Mass) + 2.0f * b1.Mass * dpNorm1) / (b1.Mass + b2.Mass);
+
+					// Update ball velocities
+					// b1.Velocity = t * dpTan1 + n * m1;
+					// b2.Velocity = t * dpTan2 + n * m2;
+
+					// Wikipedia Version
+					Vec2 k = b1.Velocity - b2.Velocity;
+					float p = 2.0f * Vec2.Dot(k, n) / (b1.Mass + b2.Mass);
+					b1.Velocity -= p * b2.Mass * n;
+					b2.Velocity += p * b1.Mass * n;
+				}
 			}
-		}
-
-		// Now work out dynamic collisions
-		foreach ((Ball b1, Ball b2) in collidingPairs)
-		{
-			// Distance between balls
-			float fDistance = Vec2.Dist(b1.position, b2.position);
-
-			// Normal
-			Vec2 n = (b2.position - b1.position) / fDistance;
-
-			// Tangent
-			// Vec2 t = n.GetNormal();
-
-			// Dot Product Tangents
-			// float dpTan1 = Vec2.Dot(b1.Velocity, t);
-			// float dpTan2 = Vec2.Dot(b2.Velocity, t);
-
-			// Dot Product Normal
-			// float dpNorm1 = Vec2.Dot(b1.Velocity, n);
-			// float dpNorm2 = Vec2.Dot(b2.Velocity, n);
-
-			// Conservation of momentum in 1D
-			// float m1 = (dpNorm1 * (b1.Mass - b2.Mass) + 2.0f * b2.Mass * dpNorm2) / (b1.Mass + b2.Mass);
-			// float m2 = (dpNorm2 * (b2.Mass - b1.Mass) + 2.0f * b1.Mass * dpNorm1) / (b1.Mass + b2.Mass);
-
-			// Update ball velocities
-			// b1.Velocity = t * dpTan1 + n * m1;
-			// b2.Velocity = t * dpTan2 + n * m2;
-
-			// Wikipedia Version
-			Vec2 k = b1.Velocity - b2.Velocity;
-			float p = 2.0f * Vec2.Dot(k, n) / (b1.Mass + b2.Mass);
-			b1.Velocity -= p * b2.Mass * n;
-			b2.Velocity += p * b1.Mass * n;
 		}
 
 		// Draw Balls
