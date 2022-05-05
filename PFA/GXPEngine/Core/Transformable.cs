@@ -54,7 +54,7 @@ namespace PFA.GXPEngine.Core
 		/// <value>
 		/// The x.
 		/// </value>
-		protected float x {
+		public float x {
 			get { return _matrix[12]; }
 			set { _matrix[12] = value; }
 		}
@@ -81,7 +81,7 @@ namespace PFA.GXPEngine.Core
 		/// <value>
 		/// The y.
 		/// </value>
-		protected float y {
+		public float y {
 			get { return _matrix[13]; }
 			set { _matrix[13] = value; }
 		}

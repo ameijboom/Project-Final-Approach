@@ -176,8 +176,7 @@ public struct Vec2 : IVec
 
 	public static Vec2 SetMag(Vec2 v, float mag)
 	{
-		v.Normalize();
-		return v * mag;
+		return v.Normalized() * mag;
 	}
 
 	/// <summary>
