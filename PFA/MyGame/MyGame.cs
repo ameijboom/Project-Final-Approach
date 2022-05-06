@@ -15,11 +15,15 @@ public class MyGame : Game
 	public static readonly List<Ball> Balls = new();
 	public Ball? SelectedBall = null;
 
+	public static readonly List<LineSegment> Lines = new();
+	public LineSegment? SelectedLine = null;
+	public bool bSelectedLineStart = false;
+
 	private MyGame() : base(1280, 960, false, true)
 	{
 		void AddBall(float x, float y)
 		{
-			Ball ball = new(x, y, Utils.Random(30, 100));
+			Ball ball = new(x, y, 20);
 			Balls.Add(ball);
 			AddChild(ball);
 		}
@@ -27,10 +31,16 @@ public class MyGame : Game
 		// AddBall(width * 0.25f, height * 0.5f);
 		// AddBall(width * 0.75f, height * 0.5f);
 
-		for (int i = 0; i < 10; i++)
-		{
+		for (int i = 0; i < 200; i++)
 			AddBall(Utils.Random(0, width), Utils.Random(0, height));
-		}
+
+		const float fLineRadius = 20;
+		Lines.Add(new LineSegment(100, 100, 500, 100, fLineRadius));
+		Lines.Add(new LineSegment(100, 200, 500, 200, fLineRadius));
+		Lines.Add(new LineSegment(100, 300, 500, 300, fLineRadius));
+		Lines.Add(new LineSegment(100, 400, 500, 400, fLineRadius));
+
+
 		Utils.print("MyGame initialized");
 	}
 
@@ -48,16 +58,47 @@ public class MyGame : Game
 				SelectedBall = ball;
 				break;
 			}
+
+			// Check for selected line segment end
+			SelectedLine = null;
+			foreach (LineSegment line in Lines)
+			{
+				if (IsPointInCircle(line.Start, line.Radius, Input.mouse))
+				{
+					SelectedLine = line;
+					bSelectedLineStart = true;
+					break;
+				}
+
+				if (IsPointInCircle(line.End, line.Radius, Input.mouse))
+				{
+					SelectedLine = line;
+					bSelectedLineStart = false;
+					break;
+				}
+			}
 		}
 
-		if (Input.GetMouseButton(0) && SelectedBall != null)
+		if (Input.GetMouseButton(0))
 		{
-			SelectedBall.position = Input.mouse;
+			if (SelectedBall != null)
+			{
+				SelectedBall.position = Input.mouse;
+			}
+
+			if (SelectedLine != null)
+			{
+				if (bSelectedLineStart)
+					SelectedLine.Start = Input.mouse;
+				else
+					SelectedLine.End = Input.mouse;
+			}
 		}
 
 		if (Input.GetMouseButtonUp(0))
 		{
 			SelectedBall = null;
+			SelectedLine = null;
 		}
 
 		if (Input.GetMouseButtonUp(1))
@@ -72,6 +113,7 @@ public class MyGame : Game
 		}
 
 		List<Tuple<Ball, Ball>> collidingPairs = new();
+		List<Ball?> fakeBalls = new();
 
 		const int nSimulationUpdates = 4;
 		float fSimElapsedTime = fElapsedTime / nSimulationUpdates;
@@ -96,6 +138,7 @@ public class MyGame : Game
 
 						// Add Drag to emulate rolling friction
 						ball.Acceleration = -ball.Velocity * 0.8f;
+						ball.Acceleration.y += 9.8f; //gravity
 
 						// Update Ball Physics
 						ball.Velocity += ball.Acceleration * ball.fSimTimeRemaining;
@@ -114,6 +157,42 @@ public class MyGame : Game
 				// Static collisions, i.e. overlap
 				foreach (Ball ball in Balls)
 				{
+
+
+					// Against Edges
+					foreach (LineSegment edge in Lines)
+					{
+						Vec2 line1 = edge.End - edge.Start;
+						Vec2 line2 = ball.position - edge.Start;
+
+						float fEdgeLength = line1.MagSq();
+						float fEdgeDot = Vec2.Dot(line1, line2);
+						float t = Mathf.Clamp(fEdgeDot, 0.0f, fEdgeLength) / fEdgeLength;
+
+						Vec2 closestPoint = edge.Start + t * line1;
+
+						float fDistance = (ball.position - closestPoint).Mag();
+
+						if (fDistance < ball.Radius + edge.Radius)
+						{
+							// Static collision has occured
+							Ball fakeBall = new(closestPoint.x, closestPoint.y, edge.Radius, ball.Mass)
+							{
+								Velocity = -ball.Velocity,
+							};
+
+							fakeBalls.Add(fakeBall);
+							collidingPairs.Add(new Tuple<Ball, Ball>(ball, fakeBall));
+
+							float fOverlap = fDistance - ball.Radius - fakeBall.Radius;
+
+							// Displace Current Ball away from the collision
+							ball.position -= fOverlap * (ball.position - fakeBall.position) / fDistance;
+						}
+					}
+
+
+
 					foreach (Ball target in Balls)
 					{
 						if (ball != target)
@@ -179,7 +258,20 @@ public class MyGame : Game
 					b1.Velocity -= p * b2.Mass * n;
 					b2.Velocity += p * b1.Mass * n;
 				}
+
+				// Remove fake balls
+				for (int k = 0; k < fakeBalls.Count; k++) fakeBalls[k] = null;
+				fakeBalls.Clear();
+
+				// Remove collisions
+				collidingPairs.Clear();
 			}
+		}
+
+		// Draw Lines
+		foreach (LineSegment lineSegment in Lines)
+		{
+			lineSegment.Render();
 		}
 
 		// Draw Balls
@@ -211,11 +303,15 @@ public class MyGame : Game
 		return Vec2.DistSq(c1.position, c2.position) < Mathf.Sq(c1.Radius + c2.Radius);
 	}
 
-	private static bool IsPointInCircle(Ball c, Vec2 p)
+	private static bool IsPointInCircle(Vec2 pc, float r, Vec2 p)
 	{
-		return Vec2.DistSq(c.position, p) < Mathf.Sq(c.Radius);
+		return Vec2.DistSq(pc, p) < Mathf.Sq(r);
 	}
 
+	private static bool IsPointInCircle(Ball c, Vec2 p)
+	{
+		return IsPointInCircle(c.position, c.Radius, p);
+	}
 
 	private static void Main()
 	{
