@@ -13,7 +13,7 @@ public class LineSegment : GameObject
 {
 	public Vec2 Start;
 	public Vec2 End;
-	public float Radius;
+	public readonly float Radius;
 
 	public LineSegment(float x1, float y1, float x2, float y2, float radius)
 	{
@@ -23,7 +23,13 @@ public class LineSegment : GameObject
 		Radius = radius;
 	}
 
-	public void Render()
+	// ReSharper disable once UnusedMember.Global
+	public void Update()
+	{
+		Render();
+	}
+
+	private void Render()
 	{
 		Gizmos.DrawCircle(Start, Radius, 4, colour:Colour.Gray);
 		Gizmos.DrawCircle(End, Radius, 4, colour:Colour.Gray);
