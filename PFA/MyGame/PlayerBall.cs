@@ -13,6 +13,6 @@ public class PlayerBall : Ball
 
 	public PlayerBall(float x, float y) : base(x, y, RADIUS, MASS)
 	{
-		Colour = Colour.Salmon;
+		Colour = Colour.Green;
 	}
 }

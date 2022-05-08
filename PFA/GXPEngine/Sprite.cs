@@ -192,9 +192,7 @@ public class Sprite : GameObject
 			if (test == false) {
 				if (blendMode != null) blendMode.enable ();
 				_texture.Bind();
-				glContext.SetColour(Colour);
-				glContext.DrawQuad(GetExtents(), _uvs);
-				glContext.SetColour(Colour.White);
+				glContext.DrawQuad(GetExtents(), _uvs, Colour);
 				_texture.Unbind();
 				if (blendMode != null) BlendMode.NORMAL.enable();
 			}
