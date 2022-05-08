@@ -11,6 +11,9 @@ namespace PFA.MyGame;
 
 public class Ball : Sprite
 {
+	private const float MAX_SPEED = 10000f; // How fast a ball may go at maximum
+	private const float DRAG_FAC = 0.98f; // If it's above the MAX_SPEED, it will slow down by this factor
+
 	public Vec2 CachedPosition;
 	public Vec2 OldPosition;
 	public Vec2 Velocity;
@@ -49,6 +52,11 @@ public class Ball : Sprite
 	{
 		// Render();
 		position = CachedPosition;
+
+		if (Velocity.MagSq() > MAX_SPEED)
+		{
+			Velocity *= DRAG_FAC;
+		}
 	}
 
 	private void Render()
