@@ -11,7 +11,7 @@ namespace PFA.MyGame;
 
 public class MyGame : Game
 {
-	private MyGame() : base(500, 1000, false, false)
+	private MyGame(int width, int height) : base(width, height, false, false)
 	{
 		targetFps = 30; //time for a console game
 		// AddBall(width * 0.25f, height * 0.5f);
@@ -34,6 +34,6 @@ public class MyGame : Game
 
 	private static void Main()
 	{
-		new MyGame().Start();
+		new MyGame(400, 800).Start();
 	}
 }

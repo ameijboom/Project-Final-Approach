@@ -4,6 +4,7 @@
 
 using PFA.GXPEngine;
 using PFA.GXPEngine.AddOns;
+using PFA.GXPEngine.Core;
 using PFA.GXPEngine.LinAlg;
 using PFA.GXPEngine.Utils;
 
@@ -21,7 +22,6 @@ public class Ball : Sprite
 	public Vec2 Acceleration;
 	public readonly float Radius;
 	public readonly float Mass;
-
 
 	public float FSimTimeRemaining;
 
@@ -51,7 +51,6 @@ public class Ball : Sprite
 	// ReSharper disable once UnusedMember.Global
 	public void Update()
 	{
-		// Render();
 		position = CachedPosition;
 
 		if (Velocity.MagSq() > MAX_SPEED)

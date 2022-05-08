@@ -14,7 +14,7 @@
     <option name="PROJECT_KIND" value="DotNetCore" />
     <option name="PROJECT_TFM" value="net6.0" />
     <method v="2">
-      <option name="Build" />
+      <option name="Build" projectName="Selected project" />
     </method>
   </configuration>
 </component>

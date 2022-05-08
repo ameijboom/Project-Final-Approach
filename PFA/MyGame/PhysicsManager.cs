@@ -33,9 +33,9 @@ public static class PhysicsManager
 
 		for (int i = 0; i < BALLS; i++)
 		{
-			Ball ball = new(Utils.Random(0, Game.width), Utils.Random(0, Game.height * PLAY_AREA_HEIGHT_FAC), 20);
-			Balls.Add(ball);
-			Game.AddChild(ball);
+			Catom catom = new(Utils.Random(0, Game.width), Utils.Random(0, Game.height * PLAY_AREA_HEIGHT_FAC), 20);
+			Balls.Add(catom);
+			Game.AddChild(catom);
 		}
 
 		AddLine(0, -LINE_RADIUS, Game.width, -LINE_RADIUS); //top
@@ -197,24 +197,34 @@ public static class PhysicsManager
 
 					foreach (Ball target in Balls)
 					{
-						if (ball != target)
+						if (ball == target) continue;
+						if (!Ball.DoCirclesOverlap(ball, target)) continue;
+
+						// Collision has occured
+						collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
+
+						// Player interaction check
+						if (ball.GetType() != typeof(PlayerBall))
 						{
-							if (Ball.DoCirclesOverlap(ball, target))
-							{
-								// Collision has occured
-								collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
-
-								// Distance between ball centers
-								float fDistance = Vec2.Dist(ball.CachedPosition, target.CachedPosition);
-								float fOverlap = 0.5f * (fDistance - ball.Radius - target.Radius);
-
-								// Displace Current Ball
-								ball.CachedPosition -= fOverlap * (ball.CachedPosition - target.CachedPosition) / fDistance;
-
-								// Displace Target Ball
-								target.CachedPosition += fOverlap * (ball.CachedPosition - target.CachedPosition) / fDistance;
-							}
+							Catom catom = (Catom) ball;
+							catom.JustBouncedOffPlayer = target.GetType() == typeof(PlayerBall);
 						}
+
+						if(target.GetType() != typeof(PlayerBall))
+						{
+							Catom catom = (Catom) target;
+							catom.JustBouncedOffPlayer = ball.GetType() == typeof(PlayerBall);
+						}
+
+						// Distance between ball centers
+						float fDistance = Vec2.Dist(ball.CachedPosition, target.CachedPosition);
+						float fOverlap = 0.5f * (fDistance - ball.Radius - target.Radius);
+
+						// Displace Current Ball
+						ball.CachedPosition -= fOverlap * (ball.CachedPosition - target.CachedPosition) / fDistance;
+
+						// Displace Target Ball
+						target.CachedPosition += fOverlap * (ball.CachedPosition - target.CachedPosition) / fDistance;
 					}
 
 					// Time displacement
