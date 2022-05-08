@@ -13,6 +13,7 @@ public class Ball : Sprite
 {
 	private const float MAX_SPEED = 10000f; // How fast a ball may go at maximum
 	private const float DRAG_FAC = 0.98f; // If it's above the MAX_SPEED, it will slow down by this factor
+	private const float START_SPEED = 10f; // How fast a ball starts
 
 	public Vec2 CachedPosition;
 	public Vec2 OldPosition;
@@ -34,7 +35,7 @@ public class Ball : Sprite
 			Mass = radius * 10.0f; //TODO: Same for mass.
 		else
 			Mass = mass;
-		Velocity = new Vec2(0, 0);
+		Velocity = Vec2.Random() * Mathf.Sq(START_SPEED);
 		Acceleration = new Vec2(0, 0);
 
 		SetOrigin(width/2f, height/2f);

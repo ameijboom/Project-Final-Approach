@@ -184,4 +184,26 @@ public struct Colour
 	public static readonly Colour YellowGreen = new(154, 205, 50);
 	public static readonly Colour PaleGreen = new(152, 251, 152);
 	public static readonly Colour PaleTurquoise = new(175, 238, 238);
+	public static readonly Colour Orange = new(255, 165, 0);
+	public static readonly Colour Pink = new(255, 192, 203);
+	public static readonly Colour Plum = new(221, 160, 221);
+	public static readonly Colour Violet = new(238, 130, 238);
+	public static readonly Colour Wheat = new(245, 222, 179);
+	public static readonly Colour Tan = new(210, 180, 140);
+	public static readonly Colour SkyBlue = new(135, 206, 235);
+	public static readonly Colour LightSteelBlue = new(176, 196, 222);
+	public static readonly Colour LightSlateGray = new(119, 136, 153);
+	public static readonly Colour LightSlateGrey = new(119, 136, 153);
+	public static readonly Colour LightGray = new(211, 211, 211);
+	public static readonly Colour LightGrey = new(211, 211, 211);
+	public static readonly Colour LightYellow = new(255, 255, 224);
+	public static readonly Colour LightCoral = new(240, 128, 128);
+	public static readonly Colour LightSalmon = new(255, 160, 122);
+	public static readonly Colour LightSeaGreen = new(32, 178, 170);
+	public static readonly Colour LightSkyBlue = new(135, 206, 250);
+	public static readonly Colour LightPink = new(255, 182, 193);
+	public static readonly Colour Tomato = new(255, 99, 71);
+	public static readonly Colour WhiteSmoke = new(245, 245, 245);
+	public static readonly Colour Salmon = new(250, 128, 114);
+	public static readonly Colour Snow = new(255, 250, 250);
 }

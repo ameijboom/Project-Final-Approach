@@ -9,7 +9,9 @@ namespace PFA.MyGame;
 
 public static class PhysicsManager
 {
+	private const int BALLS = 50;
 	private const float SHOOT_FORCE = 100f;
+	private const float PLAY_AREA_HEIGHT_FAC = 0.9f;
 
 	public static Ball? selectedBall { get; private set; } = null;
 	private static LineSegment? _selectedLine = null;
@@ -17,22 +19,29 @@ public static class PhysicsManager
 	private static readonly List<Ball> Balls = new();
 	private static readonly List<LineSegment> Lines = new();
 	private static bool _bSelectedLineStart = false;
+	private const float LINE_RADIUS = 20;
 
 	private static readonly MyGame Game;
 
 	static PhysicsManager()
 	{
 		Game = (MyGame)GXPEngine.Game.main;
-	}
+		PlayerBall playerBall = new(Utils.Random(0+LINE_RADIUS, Game.width-LINE_RADIUS), Utils.Random(0+LINE_RADIUS, Game.height * PLAY_AREA_HEIGHT_FAC - LINE_RADIUS));
+		Balls.Add(playerBall);
+		Game.AddChild(playerBall);
 
-	public static void AddBall(float x, float y)
-	{
-		Ball ball = new(x, y, 20)
+
+		for (int i = 0; i < BALLS; i++)
 		{
-			Velocity = Vec2.Random() * 10,
-		};
-		Balls.Add(ball);
-		Game.AddChild(ball);
+			Ball ball = new(Utils.Random(0, Game.width), Utils.Random(0, Game.height * PLAY_AREA_HEIGHT_FAC), 20);
+			Balls.Add(ball);
+			Game.AddChild(ball);
+		}
+
+		AddLine(0, -LINE_RADIUS, Game.width, -LINE_RADIUS); //top
+		AddLine(-LINE_RADIUS, 0, -LINE_RADIUS, Game.height); //left
+		AddLine(0, Game.height * PLAY_AREA_HEIGHT_FAC, Game.width, Game.height * PLAY_AREA_HEIGHT_FAC); //bottom
+		AddLine(Game.width+LINE_RADIUS, 0, Game.width+LINE_RADIUS, Game.height); //right
 	}
 
 	public static void RemoveBall(Ball ball)
@@ -41,10 +50,9 @@ public static class PhysicsManager
 		Game.RemoveChild(ball);
 	}
 
-	public static void AddLine(float x1, float y1, float x2, float y2)
+	private static void AddLine(float x1, float y1, float x2, float y2)
 	{
-		const float fLineRadius = 20;
-		LineSegment line = new(x1, y1, x2, y2, fLineRadius);
+		LineSegment line = new(x1, y1, x2, y2, LINE_RADIUS);
 		Lines.Add(line);
 		Game.AddChild(line);
 	}
@@ -144,11 +152,11 @@ public static class PhysicsManager
 						ball.CachedPosition += ball.Velocity * ball.FSimTimeRemaining;
 						ball.Acceleration *= 0f;
 
-						// Wrap the balls around the screen
-						if (ball.CachedPosition.x < 0) ball.x += Game.width;
-						if (ball.CachedPosition.x >= Game.width) ball.x -= Game.width;
-						if (ball.CachedPosition.y < 0) ball.y += Game.height;
-						if (ball.CachedPosition.y >= Game.height) ball.y -= Game.height;
+						// Make sure the balls stay inside the game view
+						if (ball.CachedPosition.x < 0) ball.CachedPosition.x = Game.width/2f;
+						if (ball.CachedPosition.x >= Game.width) ball.CachedPosition.x = Game.width;
+						if (ball.CachedPosition.y < 0) ball.CachedPosition.y = Game.height/2f;
+						if (ball.CachedPosition.y >= Game.height) ball.CachedPosition.y = Game.height/2f;
 
 						if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
 					}
