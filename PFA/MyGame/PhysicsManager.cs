@@ -84,7 +84,7 @@ public static class PhysicsManager
 		{
 			if (selectedBall != null)
 			{
-				selectedBall.position = Input.mouse;
+				selectedBall.CachedPosition = Input.mouse;
 			}
 
 			if (_selectedLine != null)
@@ -104,7 +104,7 @@ public static class PhysicsManager
 
 		if (Input.GetMouseButtonUp(1))
 		{
-			selectedBall?.ApplyForce(SHOOT_FORCE * (selectedBall.position - Input.mouse));
+			selectedBall?.ApplyForce(SHOOT_FORCE * (selectedBall.CachedPosition - Input.mouse));
 
 			selectedBall = null;
 		}
@@ -115,7 +115,7 @@ public static class PhysicsManager
 		List<Tuple<Ball, Ball>> collidingPairs = new();
 		List<Ball?> fakeBalls = new();
 
-		const int nSimulationUpdates = 4;
+		const int nSimulationUpdates = 3;
 		float fSimElapsedTime = fElapsedTime / nSimulationUpdates;
 
 		const int nMaxSimulationSteps = 15;
@@ -125,27 +125,33 @@ public static class PhysicsManager
 		{
 			// Set all balls time to maximum for this epoch
 			foreach (Ball ball in Balls)
+			{
 				ball.FSimTimeRemaining = fSimElapsedTime;
+				ball.CachedPosition = ball.CachedPosition;
+			}
 
 			for (int j = 0; j < nMaxSimulationSteps; j++)
 			{
 				// Update Ball Positions
-				foreach (Ball ball in Balls.Where(ball => ball.FSimTimeRemaining > 0.0f))
+				foreach (Ball ball in Balls)
 				{
-					ball.OldPosition = ball.position;
+					if (ball.FSimTimeRemaining > 0.0f)
+					{
+						ball.OldPosition = ball.CachedPosition;
 
-					// Update Ball Physics
-					ball.Velocity += ball.Acceleration * ball.FSimTimeRemaining;
-					ball.position += ball.Velocity * ball.FSimTimeRemaining;
-					ball.Acceleration *= 0f;
+						// Update Ball Physics
+						ball.Velocity += ball.Acceleration * ball.FSimTimeRemaining;
+						ball.CachedPosition += ball.Velocity * ball.FSimTimeRemaining;
+						ball.Acceleration *= 0f;
 
-					// Wrap the balls around the screen
-					if (ball.position.x < 0) ball.x += Game.width;
-					if (ball.position.x >= Game.width) ball.x -= Game.width;
-					if (ball.position.y < 0) ball.y += Game.height;
-					if (ball.position.y >= Game.height) ball.y -= Game.height;
+						// Wrap the balls around the screen
+						if (ball.CachedPosition.x < 0) ball.x += Game.width;
+						if (ball.CachedPosition.x >= Game.width) ball.x -= Game.width;
+						if (ball.CachedPosition.y < 0) ball.y += Game.height;
+						if (ball.CachedPosition.y >= Game.height) ball.y -= Game.height;
 
-					if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
+						if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
+					}
 				}
 
 				// Static collisions, i.e. overlap
@@ -155,7 +161,7 @@ public static class PhysicsManager
 					foreach (LineSegment edge in Lines)
 					{
 						Vec2 line1 = edge.End - edge.Start;
-						Vec2 line2 = ball.position - edge.Start;
+						Vec2 line2 = ball.CachedPosition - edge.Start;
 
 						float fEdgeLength = line1.MagSq();
 						float fEdgeDot = Vec2.Dot(line1, line2);
@@ -163,7 +169,7 @@ public static class PhysicsManager
 
 						Vec2 closestPoint = edge.Start + t * line1;
 
-						float fDistance = (ball.position - closestPoint).Mag();
+						float fDistance = (ball.CachedPosition - closestPoint).Mag();
 
 						if (!(fDistance < ball.Radius + edge.Radius)) continue;
 						// Static collision has occured
@@ -178,28 +184,34 @@ public static class PhysicsManager
 						float fOverlap = fDistance - ball.Radius - fakeBall.Radius;
 
 						// Displace Current Ball away from the collision
-						ball.position -= fOverlap * (ball.position - fakeBall.position) / fDistance;
+						ball.CachedPosition -= fOverlap * (ball.CachedPosition - fakeBall.CachedPosition) / fDistance;
 					}
 
-					foreach (Ball target in Balls.Where(target => ball != target).Where(target => Ball.DoCirclesOverlap(ball, target)))
+					foreach (Ball target in Balls)
 					{
-						// Collision has occured
-						collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
+						if (ball != target)
+						{
+							if (Ball.DoCirclesOverlap(ball, target))
+							{
+								// Collision has occured
+								collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
 
-						// Distance between ball centers
-						float fDistance = Vec2.Dist(ball.position, target.position);
-						float fOverlap = 0.5f * (fDistance - ball.Radius - target.Radius);
+								// Distance between ball centers
+								float fDistance = Vec2.Dist(ball.CachedPosition, target.CachedPosition);
+								float fOverlap = 0.5f * (fDistance - ball.Radius - target.Radius);
 
-						// Displace Current Ball
-						ball.position -= fOverlap * (ball.position - target.position) / fDistance;
+								// Displace Current Ball
+								ball.CachedPosition -= fOverlap * (ball.CachedPosition - target.CachedPosition) / fDistance;
 
-						// Displace Target Ball
-						target.position += fOverlap * (ball.position - target.position) / fDistance;
+								// Displace Target Ball
+								target.CachedPosition += fOverlap * (ball.CachedPosition - target.CachedPosition) / fDistance;
+							}
+						}
 					}
 
 					// Time displacement
 					float fIntendedSpeed = ball.Velocity.Mag();
-					float fActualDistance = Vec2.Dist(ball.position, ball.OldPosition);
+					float fActualDistance = Vec2.Dist(ball.CachedPosition, ball.OldPosition);
 					float fActualTime = fActualDistance / fIntendedSpeed;
 
 					ball.FSimTimeRemaining -= fActualTime;
@@ -209,10 +221,10 @@ public static class PhysicsManager
 				foreach ((Ball b1, Ball b2) in collidingPairs)
 				{
 					// Distance between balls
-					float fDistance = Vec2.Dist(b1.position, b2.position);
+					float fDistance = Vec2.Dist(b1.CachedPosition, b2.CachedPosition);
 
 					// Normal
-					Vec2 n = (b2.position - b1.position) / fDistance;
+					Vec2 n = (b2.CachedPosition - b1.CachedPosition) / fDistance;
 
 					// Wikipedia Version
 					Vec2 k = b1.Velocity - b2.Velocity;

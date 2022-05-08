@@ -11,8 +11,9 @@ namespace PFA.MyGame;
 
 public class MyGame : Game
 {
-	private MyGame() : base(1280, 960, false, true)
+	private MyGame() : base(1280, 960, false, false)
 	{
+		targetFps = 30; //time for a console game
 		// AddBall(width * 0.25f, height * 0.5f);
 		// AddBall(width * 0.75f, height * 0.5f);
 
@@ -35,8 +36,9 @@ public class MyGame : Game
 		if (PhysicsManager.selectedBall != null)
 		{
 			//Draw Cue
-			Gizmos.DrawLine(PhysicsManager.selectedBall.position, Input.mouse, colour:Colour.Blue);
+			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
 		}
+		// Utils.print(GetDiagnostics());
 	}
 
 	private static void Main()

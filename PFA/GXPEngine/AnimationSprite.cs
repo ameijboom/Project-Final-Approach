@@ -109,7 +109,7 @@ namespace PFA.GXPEngine
 		/// <summary>
 		/// Gets or sets the sprite's width in pixels.
 		/// </summary>
-		override public int width {
+		public new int width {
 			get { 
 				if (_texture != null) return (int)Math.Abs(_texture.width * _scaleX * _frameWidth);
 				return 0;
@@ -125,7 +125,7 @@ namespace PFA.GXPEngine
 		/// <summary>
 		/// Gets or sets the sprite's height in pixels.
 		/// </summary>
-		override public int height {
+		public new int height {
 			get { 
 				if (_texture != null) return (int)Math.Abs(_texture.height * _scaleY * _frameHeight);
 				return 0;

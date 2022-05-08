@@ -134,7 +134,7 @@ public class Sprite : GameObject
 	/// <summary>
 	/// Returns the texture that is used to create this sprite.
 	/// If no texture is used, null will be returned.
-	/// Use this to retreive the original width/height or filename of the texture.
+	/// Use this to retrieve the original width/height or filename of the texture.
 	/// </summary>
 	public Texture2D texture {
 		get { return _texture; }
@@ -146,7 +146,7 @@ public class Sprite : GameObject
 	/// <summary>
 	/// Gets or sets the sprite's width in pixels.
 	/// </summary>
-	virtual public int width {
+	public int width {
 		get {
 			if (_texture != null) return (int)Math.Abs(_texture.width * _scaleX);
 			return 0;
@@ -162,7 +162,7 @@ public class Sprite : GameObject
 	/// <summary>
 	/// Gets or sets the sprite's height in pixels.
 	/// </summary>
-	virtual public int height {
+	public int height {
 		get {
 			if (_texture != null) return (int)Math.Abs(_texture.height * _scaleY);
 			return 0;
