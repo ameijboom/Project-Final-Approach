@@ -167,42 +167,52 @@ public static class PhysicsManager
 				// Update Ball Positions
 				foreach (Ball ball in Balls)
 				{
-					if (ball.FSimTimeRemaining > 0.0f)
+					if (!(ball.FSimTimeRemaining > 0.0f)) continue;
+					ball.OldPosition = ball.CachedPosition;
+
+					// Update Ball Physics
+					ball.Velocity += ball.Acceleration * ball.FSimTimeRemaining;
+					ball.CachedPosition += ball.Velocity * ball.FSimTimeRemaining;
+					ball.Acceleration *= 0f;
+
+					// Make sure the balls stay inside the game view
+					if (ball.CachedPosition.x < -ball.Radius)
 					{
-						ball.OldPosition = ball.CachedPosition;
-
-						// Update Ball Physics
-						ball.Velocity += ball.Acceleration * ball.FSimTimeRemaining;
-						ball.CachedPosition += ball.Velocity * ball.FSimTimeRemaining;
-						ball.Acceleration *= 0f;
-
-						// Make sure the balls stay inside the game view
-						if (ball.CachedPosition.x < 0)
-						{
-							ball.CachedPosition.x = Game.width/2f;
-							ball.Velocity.Limit(Ball.START_SPEED);
-						}
-
-						if (ball.CachedPosition.x >= Game.width)
-						{
-							ball.CachedPosition.x = Game.width;
-							ball.Velocity.Limit(Ball.START_SPEED);
-						}
-
-						if (ball.CachedPosition.y < 0)
-						{
-							ball.CachedPosition.y = Game.height/2f;
-							ball.Velocity.Limit(Ball.START_SPEED);
-						}
-
-						if (ball.CachedPosition.y >= Game.height)
-						{
-							ball.CachedPosition.y = Game.height/2f;
-							ball.Velocity.Limit(Ball.START_SPEED);
-						}
-
-						if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
+#if DEBUG
+						Console.WriteLine("oh no at left");
+#endif
+						ball.CachedPosition.x = Game.width/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
 					}
+
+					if (ball.CachedPosition.x >= Game.width + ball.Radius)
+					{
+#if DEBUG
+						Console.WriteLine("oh no at right");
+#endif
+						ball.CachedPosition.x = Game.width/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
+					}
+
+					if (ball.CachedPosition.y < -ball.Radius)
+					{
+#if DEBUG
+						Console.WriteLine("oh no at top");
+#endif
+						ball.CachedPosition.y = Game.height/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
+					}
+
+					if (ball.CachedPosition.y >= Game.height + ball.Radius)
+					{
+#if DEBUG
+						Console.WriteLine("oh no at bottom");
+#endif
+						ball.CachedPosition.y = Game.height/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
+					}
+
+					if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
 				}
 
 				// Static collisions, i.e. overlap

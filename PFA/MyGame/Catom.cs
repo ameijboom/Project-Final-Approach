@@ -16,9 +16,12 @@ public class Catom : Ball
 
 	public bool JustBouncedOffPlayer;
 	public readonly HashSet<Ball> Bros = new();
+	private readonly float _attractionCoefficient;
 
-	protected Catom(Vec2 spawnPos, float radius, float mass, string assetName = "circle") : base(spawnPos, radius * RADIUS_FAC, mass, assetName)
+	protected Catom(Vec2 spawnPos, float radius, float mass, float attractionCoefficient, string assetName = "circle") :
+		base(spawnPos, radius * RADIUS_FAC, mass, assetName)
 	{
+		_attractionCoefficient = attractionCoefficient;
 	}
 
 	public new void Update()
@@ -34,9 +37,7 @@ public class Catom : Ball
 				width: 1);
 
 			Vec2 diff = bro.position - position;
-			float r = diff.Mag();
-			float b = Radius + bro.Radius + SPACE_BETWEEN_CATOMS;
-			ApplyForce(Force(r, b) * diff.Normalized());
+			ApplyForce(Force(diff.Mag(), Radius + bro.Radius + SPACE_BETWEEN_CATOMS) * diff.Normalized());
 		}
 	}
 
@@ -44,8 +45,8 @@ public class Catom : Ball
 	/// <param name="b">distance of equilibrium</param>
 	private float Force(float r, float b)
 	{
-		//TODO: Expose these constants (20, 1f)
-		float k = 20 * (1f/Bros.Count);
-		return ((r - b) * Mathf.Abs(r - b)) / b * k;
+		float k = _attractionCoefficient / Bros.Count;
+		r -= b;
+		return k * r * Mathf.Abs(r) / b;
 	}
 }
