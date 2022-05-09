@@ -22,7 +22,7 @@ public readonly struct Angle
 
 	private readonly float _totalRadians;
 
-	private Angle(float totalRadians)
+	public Angle(float totalRadians)
 	{
 		_totalRadians = totalRadians;
 	}

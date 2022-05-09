@@ -179,7 +179,7 @@ public static class PhysicsManager
 
 						float fDistance = (ball.CachedPosition - closestPoint).Mag();
 
-						if (!(fDistance < ball.Radius + edge.Radius)) continue;
+						if (fDistance > ball.Radius + edge.Radius) continue;
 						// Static collision has occured
 						Ball fakeBall = new(closestPoint.x, closestPoint.y, edge.Radius, ball.Mass)
 						{
@@ -215,6 +215,8 @@ public static class PhysicsManager
 							Catom catom = (Catom) target;
 							catom.JustBouncedOffPlayer = ball.GetType() == typeof(PlayerBall);
 						}
+						ball.SetAngularVelocity();
+						target.SetAngularVelocity();
 
 						// Distance between ball centers
 						float fDistance = Vec2.Dist(ball.CachedPosition, target.CachedPosition);

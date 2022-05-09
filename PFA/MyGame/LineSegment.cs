@@ -31,8 +31,8 @@ public class LineSegment : GameObject
 
 	private void Render()
 	{
-		Gizmos.DrawCircle(Start, Radius, 4, colour:Colour.Gray);
-		Gizmos.DrawCircle(End, Radius, 4, colour:Colour.Gray);
+		Gizmos.DrawCircle(Start, Radius, colour:Colour.Gray);
+		Gizmos.DrawCircle(End, Radius, colour:Colour.Gray);
 
 		Vec2 dir = End - Start;
 		Vec2 n = dir.GetNormal().SetMag(Radius);
