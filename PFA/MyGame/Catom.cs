@@ -13,7 +13,7 @@ public class Catom : Ball
 {
 	private const float RADIUS_FAC = 0.1f;
 
-	public bool JustBouncedOffPlayer;
+	public bool ReadyToCombine;
 	public readonly HashSet<Ball> Bros = new();
 
 	protected Catom(Vec2 spawnPos, float radius, float mass = 0, string assetName = "circle") : base(spawnPos, radius * RADIUS_FAC, mass, assetName)
@@ -23,7 +23,7 @@ public class Catom : Ball
 	public new void Update()
 	{
 		base.Update();
-		Colour = JustBouncedOffPlayer ? Colour.Fuchsia : Colour.White;
+		Colour = ReadyToCombine ? Colour.Fuchsia : Colour.White;
 		foreach (Ball bro in Bros)
 		{
 			Gizmos.DrawLine(position + Vec2.Random() * (Radius/2f),

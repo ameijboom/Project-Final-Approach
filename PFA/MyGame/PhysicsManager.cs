@@ -35,9 +35,6 @@ public static class PhysicsManager
 
 		Game = (MyGame)GXPEngine.Game.main;
 
-		PlayerBall playerBall = new(RandomSpawnPos());
-		AddBall(playerBall);
-
 		//TODO (Alwin): Revamp these spawn conditions depending on the required molecats
 		for (int i = 0; i < BALLS; i++)
 		{
@@ -117,11 +114,6 @@ public static class PhysicsManager
 			if (selectedBall != null)
 			{
 				selectedBall.position = Input.mouse;
-				// if (selectedBall.GetType() == typeof(Catom))
-				// {
-				// 	Catom cSB = (Catom) selectedBall;
-				// 	cSB.JustBouncedOffPlayer = true;
-				// }
 			}
 
 			if (_selectedLine != null)
@@ -141,7 +133,14 @@ public static class PhysicsManager
 
 		if (Input.GetMouseButtonUp(1))
 		{
-			selectedBall?.ApplyForce(SHOOT_FORCE * (selectedBall.CachedPosition - Input.mouse));
+			if (selectedBall != null) {
+				selectedBall.ApplyForce(SHOOT_FORCE * (selectedBall.CachedPosition - Input.mouse));
+
+				if (selectedBall is Catom catom)
+				{
+					catom.ReadyToCombine = true;
+				}
+			}
 
 			selectedBall = null;
 		}
@@ -251,39 +250,21 @@ public static class PhysicsManager
 						// Collision has occured
 						collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
 
-						if (ball.GetType() != typeof(PlayerBall) && target.GetType() != typeof(PlayerBall))
+						Catom cBall = (Catom) ball;
+						Catom cTarget = (Catom) target;
+						if (cBall.ReadyToCombine || cTarget.ReadyToCombine)
 						{
-							Catom cBall = (Catom) ball;
-							Catom cTarget = (Catom) target;
-							if (cBall.JustBouncedOffPlayer || cTarget.JustBouncedOffPlayer)
+							if (!cTarget.Bros.Contains(cBall))
 							{
-								if (!cTarget.Bros.Contains(cBall))
-								{
-									cTarget.Bros.Add(cBall);
-									cBall.JustBouncedOffPlayer = false;
-								}
-
-								if (!cBall.Bros.Contains(cTarget))
-								{
-									cBall.Bros.Add(cTarget);
-									cTarget.JustBouncedOffPlayer = false;
-								}
+								cTarget.Bros.Add(cBall);
+								cBall.ReadyToCombine = false;
 							}
-						}
 
-						// Player interaction check
-						if (ball.GetType() != typeof(PlayerBall))
-						{
-							Catom catom = (Catom) ball;
-							if(!catom.Bros.Contains(target))
-								catom.JustBouncedOffPlayer = target.GetType() == typeof(PlayerBall);
-						}
-
-						if(target.GetType() != typeof(PlayerBall))
-						{
-							Catom catom = (Catom) target;
-							if (!catom.Bros.Contains(ball))
-								catom.JustBouncedOffPlayer = ball.GetType() == typeof(PlayerBall);
+							if (!cBall.Bros.Contains(cTarget))
+							{
+								cBall.Bros.Add(cTarget);
+								cTarget.ReadyToCombine = false;
+							}
 						}
 
 						// Make balls visually rotate
