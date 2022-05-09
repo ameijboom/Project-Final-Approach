@@ -11,10 +11,12 @@ namespace PFA.MyGame;
 
 public class Catom : Ball
 {
+	private const float RADIUS_FAC = 0.1f;
+
 	public bool JustBouncedOffPlayer;
 	public readonly HashSet<Ball> Bros = new();
 
-	public Catom(float x, float y, float radius, float mass = 0) : base(x, y, radius, mass)
+	protected Catom(Vec2 spawnPos, float radius, float mass = 0, string assetName = "circle") : base(spawnPos, radius * RADIUS_FAC, mass, assetName)
 	{
 	}
 
@@ -24,7 +26,9 @@ public class Catom : Ball
 		Colour = JustBouncedOffPlayer ? Colour.Fuchsia : Colour.White;
 		foreach (Ball bro in Bros)
 		{
-			Gizmos.DrawLine(position + Vec2.Random()*10, bro.position + Vec2.Random()*10);
+			Gizmos.DrawLine(position + Vec2.Random() * (Radius/2f),
+				bro.position + Vec2.Random() * (bro.Radius/2f),
+				width: 1, colour:new Colour(255, 127));
 			Vec2 diff = bro.position - position;
 			float r = diff.Mag();
 			Vec2 dir = diff.Normalized();
