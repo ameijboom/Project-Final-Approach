@@ -117,11 +117,6 @@ public static class PhysicsManager
 			if (selectedBall != null)
 			{
 				selectedBall.position = Input.mouse;
-				// if (selectedBall.GetType() == typeof(Catom))
-				// {
-				// 	Catom cSB = (Catom) selectedBall;
-				// 	cSB.JustBouncedOffPlayer = true;
-				// }
 			}
 
 			if (_selectedLine != null)
