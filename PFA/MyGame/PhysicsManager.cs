@@ -9,9 +9,11 @@ namespace PFA.MyGame;
 
 public static class PhysicsManager
 {
-	private const int BALLS = 50;
+	private const int BALLS = 10;
 	private const float SHOOT_FORCE = 100f;
 	private const float PLAY_AREA_HEIGHT_FAC = 0.9f;
+	private const float CONNECTED_BALL_DAMP_FAC = 0.0f;
+
 
 	public static Ball? selectedBall { get; private set; } = null;
 	private static LineSegment? _selectedLine = null;
@@ -25,17 +27,20 @@ public static class PhysicsManager
 
 	static PhysicsManager()
 	{
+		void AddBall(Ball ball)
+		{
+			Balls.Add(ball);
+			Game.AddChild(ball);
+		}
+
 		Game = (MyGame)GXPEngine.Game.main;
 		PlayerBall playerBall = new(Utils.Random(0+LINE_RADIUS, Game.width-LINE_RADIUS), Utils.Random(0+LINE_RADIUS, Game.height * PLAY_AREA_HEIGHT_FAC - LINE_RADIUS));
-		Balls.Add(playerBall);
-		Game.AddChild(playerBall);
-
+		AddBall(playerBall);
 
 		for (int i = 0; i < BALLS; i++)
 		{
 			Catom catom = new(Utils.Random(0, Game.width), Utils.Random(0, Game.height * PLAY_AREA_HEIGHT_FAC), 20);
-			Balls.Add(catom);
-			Game.AddChild(catom);
+			AddBall(catom);
 		}
 
 		AddLine(0, -LINE_RADIUS, Game.width, -LINE_RADIUS); //top
@@ -93,6 +98,11 @@ public static class PhysicsManager
 			if (selectedBall != null)
 			{
 				selectedBall.CachedPosition = Input.mouse;
+				// if (selectedBall.GetType() == typeof(Catom))
+				// {
+				// 	Catom cSB = (Catom) selectedBall;
+				// 	cSB.JustBouncedOffPlayer = true;
+				// }
 			}
 
 			if (_selectedLine != null)
@@ -203,18 +213,42 @@ public static class PhysicsManager
 						// Collision has occured
 						collidingPairs.Add(new Tuple<Ball, Ball>(ball, target));
 
+						if (ball.GetType() != typeof(PlayerBall) && target.GetType() != typeof(PlayerBall))
+						{
+							Catom cBall = (Catom) ball;
+							Catom cTarget = (Catom) target;
+							if (cBall.JustBouncedOffPlayer || cTarget.JustBouncedOffPlayer)
+							{
+								if (!cTarget.Bros.Contains(cBall))
+								{
+									cTarget.Bros.Add(cBall);
+									cBall.JustBouncedOffPlayer = false;
+								}
+
+								if (!cBall.Bros.Contains(cTarget))
+								{
+									cBall.Bros.Add(cTarget);
+									cTarget.JustBouncedOffPlayer = false;
+								}
+							}
+						}
+
 						// Player interaction check
 						if (ball.GetType() != typeof(PlayerBall))
 						{
 							Catom catom = (Catom) ball;
-							catom.JustBouncedOffPlayer = target.GetType() == typeof(PlayerBall);
+							if(!catom.Bros.Contains(target))
+								catom.JustBouncedOffPlayer = target.GetType() == typeof(PlayerBall);
 						}
 
 						if(target.GetType() != typeof(PlayerBall))
 						{
 							Catom catom = (Catom) target;
-							catom.JustBouncedOffPlayer = ball.GetType() == typeof(PlayerBall);
+							if (!catom.Bros.Contains(ball))
+								catom.JustBouncedOffPlayer = ball.GetType() == typeof(PlayerBall);
 						}
+
+						// Make balls visually rotate
 						ball.SetAngularVelocity();
 						target.SetAngularVelocity();
 
@@ -240,6 +274,14 @@ public static class PhysicsManager
 				// Now work out dynamic collisions
 				foreach ((Ball b1, Ball b2) in collidingPairs)
 				{
+					float fac = 1.0f;
+					if (b1.GetType() == typeof(Catom) && b2.GetType() == typeof(Catom))
+					{
+						Catom cB1 = (Catom) b1;
+						Catom cB2 = (Catom) b2;
+						if(cB1.Bros.Contains(cB2) || cB2.Bros.Contains(cB1)) fac =  CONNECTED_BALL_DAMP_FAC;
+					}
+
 					// Distance between balls
 					float fDistance = Vec2.Dist(b1.CachedPosition, b2.CachedPosition);
 
@@ -249,8 +291,8 @@ public static class PhysicsManager
 					// Wikipedia Version
 					Vec2 k = b1.Velocity - b2.Velocity;
 					float p = 2.0f * Vec2.Dot(k, n) / (b1.Mass + b2.Mass);
-					b1.Velocity -= p * b2.Mass * n;
-					b2.Velocity += p * b1.Mass * n;
+					b1.Velocity -= p * b2.Mass * n * fac;
+					b2.Velocity += p * b1.Mass * n * fac;
 				}
 
 				// Remove fake balls
