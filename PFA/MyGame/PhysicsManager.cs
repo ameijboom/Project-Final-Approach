@@ -146,13 +146,13 @@ public static class PhysicsManager
 		}
 	}
 
-	private static void PhysicsBehaviour(float fElapsedTime)
+	private static void PhysicsBehaviour()
 	{
 		List<Tuple<Ball, Ball>> collidingPairs = new();
 		List<Ball?> fakeBalls = new();
 
 		const int nSimulationUpdates = 3;
-		float fSimElapsedTime = fElapsedTime / nSimulationUpdates;
+		float fSimElapsedTime = MyGame.fElapsedTime / nSimulationUpdates;
 
 		const int nMaxSimulationSteps = 15;
 
@@ -336,12 +336,11 @@ public static class PhysicsManager
 
 	public static void Step()
 	{
-		float fElapsedTime = Time.deltaTime / 1000f;
 #if DEBUG
 		Utils.print("FPS: " + Game.currentFps, "fElapsedTime: " + fElapsedTime);
 #endif
 		MouseBehaviour();
 
-		PhysicsBehaviour(fElapsedTime);
+		PhysicsBehaviour();
 	}
 }

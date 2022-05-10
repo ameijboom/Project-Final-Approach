@@ -11,7 +11,7 @@ namespace PFA.MyGame;
 
 public class Catom : Ball
 {
-	private const float RADIUS_FAC = 0.1f;
+	private const float RADIUS_FAC = 0.2f;
 	private const float SPACE_BETWEEN_CATOMS = 10f; // How far apart should the catoms try to be from each other?
 
 	public bool ReadyToCombine;

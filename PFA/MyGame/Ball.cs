@@ -43,11 +43,12 @@ public class Ball : Sprite
 		height = (int)radius * 2;
 
 		SetAngularVelocity();
+		// Utils.print(this, _angularVelocity);
 	}
 
 	public void SetAngularVelocity()
 	{
-		float mag = 1f / Mass * MAX_ANGULAR_SPEED_FAC; //TODO: Make a better formula (now the light ones spin way too fast)
+		float mag = Mathf.Map(Mass, 0, 40, 3, 1); //TODO: Make a better formula (now the light ones spin way too fast)
 		_angularVelocity = Utils.Random(-mag, mag);
 	}
 
@@ -60,7 +61,7 @@ public class Ball : Sprite
 	protected void Update()
 	{
 		position = CachedPosition;
-		rotation += new Angle(_angularVelocity);
+		rotation += new Angle(_angularVelocity * MyGame.fElapsedTime);
 
 		if (Velocity.MagSq() > MAX_SPEED)
 		{
