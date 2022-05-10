@@ -3,15 +3,16 @@
 // You're allowed to learn from this, but please do not simply copy.
 
 using PFA.GXPEngine.Core;
+using PFA.GXPEngine.LinAlg;
 
 namespace PFA.MyGame;
 
 public class PlayerBall : Ball
 {
 	private const float RADIUS = 32;
-	private const float MASS = 1000;
+	private const float MASS = 300;
 
-	public PlayerBall(float x, float y) : base(x, y, RADIUS, MASS)
+	public PlayerBall(Vec2 spawnPos) : base(spawnPos, RADIUS, MASS)
 	{
 		Colour = Colour.Green;
 	}

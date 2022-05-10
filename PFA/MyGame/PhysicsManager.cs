@@ -4,16 +4,16 @@
 
 using PFA.GXPEngine.LinAlg;
 using PFA.GXPEngine.Utils;
+using PFA.MyGame.CatomTypes;
 
 namespace PFA.MyGame;
 
 public static class PhysicsManager
 {
-	private const int BALLS = 10;
+	private const int BALLS = 50;
 	private const float SHOOT_FORCE = 100f;
 	private const float PLAY_AREA_HEIGHT_FAC = 0.9f;
 	private const float CONNECTED_BALL_DAMP_FAC = 0.0f;
-
 
 	public static Ball? selectedBall { get; private set; } = null;
 	private static LineSegment? _selectedLine = null;
@@ -34,12 +34,26 @@ public static class PhysicsManager
 		}
 
 		Game = (MyGame)GXPEngine.Game.main;
-		PlayerBall playerBall = new(Utils.Random(0+LINE_RADIUS, Game.width-LINE_RADIUS), Utils.Random(0+LINE_RADIUS, Game.height * PLAY_AREA_HEIGHT_FAC - LINE_RADIUS));
+
+		PlayerBall playerBall = new(RandomSpawnPos());
 		AddBall(playerBall);
 
+		//TODO (Alwin): Revamp these spawn conditions depending on the required molecats
 		for (int i = 0; i < BALLS; i++)
 		{
-			Catom catom = new(Utils.Random(0, Game.width), Utils.Random(0, Game.height * PLAY_AREA_HEIGHT_FAC), 20);
+			Vec2 spawnPos = RandomSpawnPos();
+			Catom catom = Utils.Random(0, 6) switch
+			{
+				0 => new CatCalcium(spawnPos),
+				1 => new CatCarbon(spawnPos),
+				2 => new CatHydrogen(spawnPos),
+				3 => new CatNitrogen(spawnPos),
+				4 => new CatOxygen(spawnPos),
+				5 => new CatPhosphorus(spawnPos),
+				6 => new CatSodium(spawnPos),
+				_ => throw new Exception("aa"),
+			};
+
 			AddBall(catom);
 		}
 
@@ -47,6 +61,11 @@ public static class PhysicsManager
 		AddLine(-LINE_RADIUS, 0, -LINE_RADIUS, Game.height); //left
 		AddLine(0, Game.height * PLAY_AREA_HEIGHT_FAC, Game.width, Game.height * PLAY_AREA_HEIGHT_FAC); //bottom
 		AddLine(Game.width+LINE_RADIUS, 0, Game.width+LINE_RADIUS, Game.height); //right
+	}
+
+	private static Vec2 RandomSpawnPos()
+	{
+		return new Vec2(Utils.Random(0, Game.width), Utils.Random(0, Game.height * PLAY_AREA_HEIGHT_FAC - LINE_RADIUS));
 	}
 
 	public static void RemoveBall(Ball ball)
@@ -97,12 +116,7 @@ public static class PhysicsManager
 		{
 			if (selectedBall != null)
 			{
-				selectedBall.CachedPosition = Input.mouse;
-				// if (selectedBall.GetType() == typeof(Catom))
-				// {
-				// 	Catom cSB = (Catom) selectedBall;
-				// 	cSB.JustBouncedOffPlayer = true;
-				// }
+				selectedBall.position = Input.mouse;
 			}
 
 			if (_selectedLine != null)
@@ -145,7 +159,7 @@ public static class PhysicsManager
 			foreach (Ball ball in Balls)
 			{
 				ball.FSimTimeRemaining = fSimElapsedTime;
-				ball.CachedPosition = ball.CachedPosition;
+				ball.CachedPosition = ball.position;
 			}
 
 			for (int j = 0; j < nMaxSimulationSteps; j++)
@@ -153,23 +167,52 @@ public static class PhysicsManager
 				// Update Ball Positions
 				foreach (Ball ball in Balls)
 				{
-					if (ball.FSimTimeRemaining > 0.0f)
+					if (!(ball.FSimTimeRemaining > 0.0f)) continue;
+					ball.OldPosition = ball.CachedPosition;
+
+					// Update Ball Physics
+					ball.Velocity += ball.Acceleration * ball.FSimTimeRemaining;
+					ball.CachedPosition += ball.Velocity * ball.FSimTimeRemaining;
+					ball.Acceleration *= 0f;
+
+					// Make sure the balls stay inside the game view
+					if (ball.CachedPosition.x < -ball.Radius)
 					{
-						ball.OldPosition = ball.CachedPosition;
-
-						// Update Ball Physics
-						ball.Velocity += ball.Acceleration * ball.FSimTimeRemaining;
-						ball.CachedPosition += ball.Velocity * ball.FSimTimeRemaining;
-						ball.Acceleration *= 0f;
-
-						// Make sure the balls stay inside the game view
-						if (ball.CachedPosition.x < 0) ball.CachedPosition.x = Game.width/2f;
-						if (ball.CachedPosition.x >= Game.width) ball.CachedPosition.x = Game.width;
-						if (ball.CachedPosition.y < 0) ball.CachedPosition.y = Game.height/2f;
-						if (ball.CachedPosition.y >= Game.height) ball.CachedPosition.y = Game.height/2f;
-
-						if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
+#if DEBUG
+						Console.WriteLine("oh no at left");
+#endif
+						ball.CachedPosition.x = Game.width/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
 					}
+
+					if (ball.CachedPosition.x >= Game.width + ball.Radius)
+					{
+#if DEBUG
+						Console.WriteLine("oh no at right");
+#endif
+						ball.CachedPosition.x = Game.width/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
+					}
+
+					if (ball.CachedPosition.y < -ball.Radius)
+					{
+#if DEBUG
+						Console.WriteLine("oh no at top");
+#endif
+						ball.CachedPosition.y = Game.height/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
+					}
+
+					if (ball.CachedPosition.y >= Game.height + ball.Radius)
+					{
+#if DEBUG
+						Console.WriteLine("oh no at bottom");
+#endif
+						ball.CachedPosition.y = Game.height/2f;
+						ball.Velocity.Limit(Ball.START_SPEED);
+					}
+
+					if (ball.Velocity.MagSq() < 0.01f) ball.Velocity = new Vec2();
 				}
 
 				// Static collisions, i.e. overlap
@@ -191,7 +234,7 @@ public static class PhysicsManager
 
 						if (fDistance > ball.Radius + edge.Radius) continue;
 						// Static collision has occured
-						Ball fakeBall = new(closestPoint.x, closestPoint.y, edge.Radius, ball.Mass)
+						Ball fakeBall = new(closestPoint, edge.Radius, ball.Mass)
 						{
 							Velocity = -ball.Velocity,
 						};
