@@ -23,6 +23,8 @@ public class MyGame : Game
 	private void Update()
 	{
 		fElapsedTime = Time.deltaTime / 1000f;
+		float tempElapsedTime = fElapsedTime;
+		fElapsedTime = Mathf.Clamp(Mathf.Map(Input.mouse.x, 0, width, 0, tempElapsedTime), 0, 1);  //TODO: Base this on something else than the mouse X position.
 #if DEBUG
 		Utils.print("FPS: " + currentFps, "fElapsedTime: " + fElapsedTime);
 #endif

@@ -11,7 +11,7 @@ namespace PFA.MyGame;
 public static class PhysicsManager
 {
 	private const int BALLS = 50;
-	private const float SHOOT_FORCE = 100f;
+	private const float SHOOT_FORCE = 300f;
 	private const float PLAY_AREA_HEIGHT_FAC = 0.9f;
 	private const float CONNECTED_BALL_DAMP_FAC = 0.0f;
 
@@ -134,7 +134,7 @@ public static class PhysicsManager
 		if (Input.GetMouseButtonUp(1))
 		{
 			if (selectedBall != null) {
-				selectedBall.ApplyForce(SHOOT_FORCE * (selectedBall.CachedPosition - Input.mouse));
+				selectedBall.ApplyForce(SHOOT_FORCE * (selectedBall.CachedPosition - Input.mouse)); //TODO: Fix this; the actual shoot force is dependent on the fElapsedTime, which is not good, cause if the game slows down, the force also gets smaller
 
 				if (selectedBall is Catom catom)
 				{

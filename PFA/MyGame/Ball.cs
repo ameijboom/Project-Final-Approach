@@ -55,6 +55,7 @@ public class Ball : Sprite
 
 	public void ApplyForce(Vec2 force)
 	{
+		Console.WriteLine("Shot with! " + force);
 		Acceleration += force;
 	}
 
