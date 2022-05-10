@@ -14,7 +14,7 @@ public class Catom : Ball
 	private const float RADIUS_FAC = 0.1f;
 	private const float SPACE_BETWEEN_CATOMS = 10f; // How far apart should the catoms try to be from each other?
 
-	public bool JustBouncedOffPlayer;
+	public bool ReadyToCombine;
 	public readonly HashSet<Ball> Bros = new();
 	private readonly float _attractionCoefficient;
 
@@ -27,7 +27,7 @@ public class Catom : Ball
 	public new void Update()
 	{
 		base.Update();
-		Colour = JustBouncedOffPlayer ? Colour.Fuchsia : Colour.White;
+		Colour = ReadyToCombine ? Colour.Fuchsia : Colour.White;
 		foreach (Ball bro in Bros)
 		{
 			Gizmos.DrawLine(
