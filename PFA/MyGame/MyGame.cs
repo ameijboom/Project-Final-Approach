@@ -16,8 +16,6 @@ public class MyGame : Game
 	private MyGame(int width, int height) : base(width, height, false, false)
 	{
 		targetFps = 30; //time for a console game
-		// AddBall(width * 0.25f, height * 0.5f);
-		// AddBall(width * 0.75f, height * 0.5f);
 		Utils.print("MyGame initialized");
 	}
 
@@ -25,6 +23,9 @@ public class MyGame : Game
 	private void Update()
 	{
 		fElapsedTime = Time.deltaTime / 1000f;
+#if DEBUG
+		Utils.print("FPS: " + currentFps, "fElapsedTime: " + fElapsedTime);
+#endif
 		PhysicsManager.Step();
 
 		if (PhysicsManager.selectedBall != null)

@@ -15,7 +15,8 @@ public class Ball : Sprite
 	private const float MAX_SPEED = 10000f; // How fast a ball may go at maximum
 	private const float DRAG_FAC = 0.98f; // If it's above the MAX_SPEED, it will slow down by this factor
 	public const float START_SPEED = 10f; // How fast a ball starts
-	private const float MAX_ANGULAR_SPEED_FAC = 1f; // How fast a ball may spin at maximum
+	private const float MAX_ANGULAR_SPEED = 3f; // How fast a ball may spin at maximum
+	private const float MIN_ANGULAR_SPEED = 1f; // How fast a ball may spin at minimum
 
 	public Vec2 CachedPosition;
 	public Vec2 OldPosition;
@@ -48,7 +49,7 @@ public class Ball : Sprite
 
 	public void SetAngularVelocity()
 	{
-		float mag = Mathf.Map(Mass, 0, 40, 3, 1); //TODO: Make a better formula (now the light ones spin way too fast)
+		float mag = Mathf.Map(Mass, 0, 40, MAX_ANGULAR_SPEED, MIN_ANGULAR_SPEED); //TODO: Make a better formula (now the light ones spin way too fast)
 		_angularVelocity = Utils.Random(-mag, mag);
 	}
 

@@ -336,9 +336,6 @@ public static class PhysicsManager
 
 	public static void Step()
 	{
-#if DEBUG
-		Utils.print("FPS: " + Game.currentFps, "fElapsedTime: " + fElapsedTime);
-#endif
 		MouseBehaviour();
 
 		PhysicsBehaviour();
