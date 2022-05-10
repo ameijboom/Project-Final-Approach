@@ -11,6 +11,8 @@ namespace PFA.MyGame;
 
 public class MyGame : Game
 {
+	public static float fElapsedTime = 0f;
+
 	private MyGame(int width, int height) : base(width, height, false, false)
 	{
 		targetFps = 30; //time for a console game
@@ -22,6 +24,7 @@ public class MyGame : Game
 	// ReSharper disable once UnusedMember.Local
 	private void Update()
 	{
+		fElapsedTime = Time.deltaTime / 1000f;
 		PhysicsManager.Step();
 
 		if (PhysicsManager.selectedBall != null)
@@ -34,6 +37,6 @@ public class MyGame : Game
 
 	private static void Main()
 	{
-		new MyGame(400, 800).Start();
+		new MyGame(1600, 900).Start();
 	}
 }
