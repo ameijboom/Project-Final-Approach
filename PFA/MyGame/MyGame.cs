@@ -21,6 +21,9 @@ public class MyGame : Game
 
 		// Play Main Menu beginning music
 		SoundManager.PlayBackground(SoundManager.BackgroundMusic.MmBegin);
+
+		SceneManager.ShowScenes();
+		SceneManager.ActivateScene("main");
 	}
 
 	// ReSharper disable once UnusedMember.Local
