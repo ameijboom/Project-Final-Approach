@@ -125,21 +125,28 @@ namespace PFA.GXPEngine.Core
 			GLFW.glfwSetKeyCallback(Window,
 				(System.IntPtr _window, int _key, int _scanCode, int _action, int _mods) =>
 				{
-					bool press = (_action == GLFW.GLFW_PRESS);
-
-					if (press)
+					try
 					{
-						keydown[((int) _key)] = true;
-						anyKeyDown = true;
-						keyPressedCount++;
-					}
-					else
-					{
-						keyup[((int) _key)] = true;
-						keyPressedCount--;
-					}
+						bool press = (_action == GLFW.GLFW_PRESS);
 
-					keys[((int) _key)] = (_action == GLFW.GLFW_REPEAT || press);
+						if (press)
+						{
+							keydown[((int) _key)] = true;
+							anyKeyDown = true;
+							keyPressedCount++;
+						}
+						else
+						{
+							keyup[((int) _key)] = true;
+							keyPressedCount--;
+						}
+
+						keys[((int) _key)] = (_action == GLFW.GLFW_REPEAT || press);
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine(e);
+					}
 				});
 
 			GLFW.glfwSetMouseButtonCallback(Window,

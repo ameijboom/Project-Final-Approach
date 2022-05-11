@@ -6,6 +6,7 @@ using PFA.GXPEngine;
 using PFA.GXPEngine.AddOns;
 using PFA.GXPEngine.Core;
 using PFA.GXPEngine.Utils;
+using PFA.MyGame.Managers;
 
 namespace PFA.MyGame;
 
@@ -17,6 +18,9 @@ public class MyGame : Game
 	{
 		targetFps = 30; //time for a console game
 		Utils.print("MyGame initialized");
+
+		// Play Main Menu beginning music
+		SoundManager.PlayBackground(SoundManager.BackgroundMusic.MmBegin);
 	}
 
 	// ReSharper disable once UnusedMember.Local
@@ -33,6 +37,15 @@ public class MyGame : Game
 			//Draw Cue
 			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
 		}
+
+		// Play Main Menu infinite loop music
+		if (!SoundManager.GetBackground(SoundManager.BackgroundMusic.MmBegin).IsPlaying()
+		    && !SoundManager.GetBackground(SoundManager.BackgroundMusic.MmLoop).IsPlaying())
+		{
+			SoundManager.PlayBackground(SoundManager.BackgroundMusic.MmLoop);
+			Console.WriteLine("Starting background infinite loop");
+		}
+
 		// Utils.print(GetDiagnostics());
 	}
 

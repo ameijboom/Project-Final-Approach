@@ -2,11 +2,12 @@ namespace PFA.MyGame.Models;
 
 public class Music : Sfx
 {
-    public string Id { get; set; }
+	public string id { get; }
 
-    public Music(string path, bool looping = true) : base(path, looping)
-    {
-        Id = path.Replace(".scenes.tmx", "");
-        Id = Id.Replace("./assets/bgm", "");
-    }
+	public Music(string path, bool looping = true) : base(path, looping)
+	{
+		string fileName = System.IO.Path.GetFileName(path);
+		string[] strings = fileName.Split('.');
+		id = strings[0];
+	}
 }
