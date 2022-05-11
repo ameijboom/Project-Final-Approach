@@ -14,8 +14,9 @@ public class Ball : Sprite
 {
 	private const float MAX_SPEED = 10000f; // How fast a ball may go at maximum
 	private const float DRAG_FAC = 0.98f; // If it's above the MAX_SPEED, it will slow down by this factor
-	private const float START_SPEED = 10f; // How fast a ball starts
-	private const float MAX_ANGULAR_SPEED = 0.06f; // How fast a ball may spin at maximum
+	public const float START_SPEED = 10f; // How fast a ball starts
+	private const float MAX_ANGULAR_SPEED = 3f; // How fast a ball may spin at maximum
+	private const float MIN_ANGULAR_SPEED = 1f; // How fast a ball may spin at minimum
 
 	public Vec2 CachedPosition;
 	public Vec2 OldPosition;
@@ -28,16 +29,13 @@ public class Ball : Sprite
 
 	private float _angularVelocity;
 
-	public Ball(float x, float y, float radius, float mass = 0) : base("assets/circle.png", true, false)
+	public Ball(Vec2 spawnPos, float radius, float mass, string assetName = "circle") : base($"assets/{assetName}.png", true, false)
 	{
-		OldPosition = new Vec2(x, y);
-		position = new Vec2(x, y);
+		OldPosition = spawnPos;
+		position = spawnPos;
 		CachedPosition = position;
-		Radius = radius; //TODO: Base this on the radius of a hydrogen atom, and make all other atoms have a relative radius to that.
-		if(mass <= 0)
-			Mass = radius * 10.0f; //TODO: Same for mass.
-		else
-			Mass = mass;
+		Radius = radius;
+		Mass = mass;
 		Velocity = Vec2.Random() * Mathf.Sq(START_SPEED);
 		Acceleration = new Vec2(0, 0);
 
@@ -46,11 +44,13 @@ public class Ball : Sprite
 		height = (int)radius * 2;
 
 		SetAngularVelocity();
+		// Utils.print(this, _angularVelocity);
 	}
 
 	public void SetAngularVelocity()
 	{
-		_angularVelocity = Utils.Random(-MAX_ANGULAR_SPEED, MAX_ANGULAR_SPEED);
+		float mag = Mathf.Map(Mass, 0, 40, MAX_ANGULAR_SPEED, MIN_ANGULAR_SPEED); //TODO: Make a better formula (now the light ones spin way too fast)
+		_angularVelocity = Utils.Random(-mag, mag);
 	}
 
 	public void ApplyForce(Vec2 force)
@@ -59,10 +59,10 @@ public class Ball : Sprite
 	}
 
 	// ReSharper disable once UnusedMember.Global
-	public void Update()
+	protected void Update()
 	{
 		position = CachedPosition;
-		rotation += new Angle(_angularVelocity);
+		rotation += new Angle(_angularVelocity * MyGame.fElapsedTime);
 
 		if (Velocity.MagSq() > MAX_SPEED)
 		{
@@ -78,8 +78,6 @@ public class Ball : Sprite
 		// 	dir = new Vec2(Radius, 0);
 		// Gizmos.DrawRay(position, dir);
 	}
-
-
 
 	public static bool DoCirclesOverlap(Ball c1, Ball c2)
 	{

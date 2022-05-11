@@ -12,11 +12,11 @@ namespace PFA.MyGame;
 
 public class MyGame : Game
 {
+	public static float fElapsedTime = 0f;
+
 	private MyGame(int width, int height) : base(width, height, false, false)
 	{
 		targetFps = 30; //time for a console game
-		// AddBall(width * 0.25f, height * 0.5f);
-		// AddBall(width * 0.75f, height * 0.5f);
 		Utils.print("MyGame initialized");
 		SceneManager.ShowScenes();
 		SceneManager.ActivateScene("menu");
@@ -25,7 +25,11 @@ public class MyGame : Game
 	// ReSharper disable once UnusedMember.Local
 	private void Update()
 	{
-		// PhysicsManager.Step();
+		fElapsedTime = Time.deltaTime / 1000f;
+#if DEBUG
+		Utils.print("FPS: " + currentFps, "fElapsedTime: " + fElapsedTime);
+#endif
+		PhysicsManager.Step();
 
 		// if (PhysicsManager.selectedBall != null)
 		// {
@@ -37,6 +41,6 @@ public class MyGame : Game
 
 	private static void Main()
 	{
-		new MyGame(400, 800).Start();
+		new MyGame(1600, 900).Start();
 	}
 }
