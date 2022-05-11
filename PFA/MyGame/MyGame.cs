@@ -1,4 +1,4 @@
-﻿// Author: TechnicJelle
+// Author: TechnicJelle
 // Copyright (c) TechnicJelle. All rights reserved.
 // You're allowed to learn from this, but please do not simply copy.
 
@@ -21,6 +21,9 @@ public class MyGame : Game
 
 		// Play Main Menu beginning music
 		SoundManager.PlayBackground(SoundManager.BackgroundMusic.MmBegin);
+
+		SceneManager.ShowScenes();
+		SceneManager.ActivateScene("menu");
 	}
 
 	// ReSharper disable once UnusedMember.Local
@@ -32,12 +35,6 @@ public class MyGame : Game
 #endif
 		PhysicsManager.Step();
 
-		if (PhysicsManager.selectedBall != null)
-		{
-			//Draw Cue
-			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
-		}
-
 		// Play Main Menu infinite loop music
 		if (!SoundManager.GetBackground(SoundManager.BackgroundMusic.MmBegin).IsPlaying()
 		    && !SoundManager.GetBackground(SoundManager.BackgroundMusic.MmLoop).IsPlaying())
@@ -46,6 +43,12 @@ public class MyGame : Game
 			Console.WriteLine("Starting background infinite loop");
 		}
 
+		if (PhysicsManager.selectedBall != null)
+		{
+			//Draw Cue
+			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
+		}
+		
 		// Utils.print(GetDiagnostics());
 	}
 

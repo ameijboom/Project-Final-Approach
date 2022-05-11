@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="26">
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="1" name="Resolution Width" x="512" y="320" width="320" height="64"/>
+  <object id="2" name="Resolution Height" x="512" y="416" width="320" height="64"/>
+  <object id="3" name="Fullscreen" x="512" y="512" width="320" height="64"/>
+  <object id="4" name="Master Volume" x="512" y="608" width="320" height="64"/>
+  <object id="5" name="Music Volume" x="512" y="704" width="320" height="64"/>
+  <object id="6" name="Sound Volume" x="512" y="800" width="320" height="64"/>
+  <object id="8" name="Width Input" x="960" y="320" width="192" height="64"/>
+  <object id="9" name="Height Input" x="960" y="416" width="192" height="64"/>
+  <object id="10" name="Fullscreen Checkbox" x="960" y="512" width="64" height="64"/>
+  <object id="11" name="Master -" x="960" y="608" width="64" height="64"/>
+  <object id="12" name="Master #" x="1088" y="608" width="64" height="64"/>
+  <object id="14" name="Master +" x="1216" y="608" width="64" height="64"/>
+  <object id="15" name="Music - " x="960" y="704" width="64" height="64"/>
+  <object id="16" name="Music #" x="1088" y="704" width="64" height="64"/>
+  <object id="17" name="Music +" x="1216" y="704" width="64" height="64"/>
+  <object id="18" name="Sound -" x="960" y="800" width="64" height="64"/>
+  <object id="19" name="Sound #" x="1088" y="800" width="64" height="64"/>
+  <object id="20" name="Sound +" x="1216" y="800" width="64" height="64"/>
+  <object id="21" name="Back" x="64" y="64" width="128" height="64"/>
+  <object id="22" name="Settings Header" x="512" y="64" width="768" height="128"/>
+ </objectgroup>
+</map>
