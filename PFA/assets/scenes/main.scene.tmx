@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="6">
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="1" name="Molecat Display" x="1344" y="0" width="576" height="320"/>
+  <object id="2" name="Combos Left" x="1344" y="320" width="576" height="320"/>
+  <object id="3" name="Timer" x="1344" y="640" width="576" height="448"/>
+  <object id="4" name="Playfield" x="0" y="0" width="1344" height="1088"/>
+ </objectgroup>
+</map>

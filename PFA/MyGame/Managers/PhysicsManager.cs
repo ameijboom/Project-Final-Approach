@@ -5,7 +5,7 @@
 using PFA.GXPEngine.LinAlg;
 using PFA.GXPEngine.Utils;
 
-namespace PFA.MyGame;
+namespace PFA.MyGame.Managers;
 
 public static class PhysicsManager
 {
@@ -135,7 +135,7 @@ public static class PhysicsManager
 			foreach (Ball ball in Balls)
 			{
 				ball.FSimTimeRemaining = fSimElapsedTime;
-				ball.CachedPosition = ball.CachedPosition;
+				ball.CachedPosition = ball.position;
 			}
 
 			for (int j = 0; j < nMaxSimulationSteps; j++)

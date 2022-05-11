@@ -6,6 +6,7 @@ using PFA.GXPEngine;
 using PFA.GXPEngine.AddOns;
 using PFA.GXPEngine.Core;
 using PFA.GXPEngine.Utils;
+using PFA.MyGame.Managers;
 
 namespace PFA.MyGame;
 
@@ -17,18 +18,20 @@ public class MyGame : Game
 		// AddBall(width * 0.25f, height * 0.5f);
 		// AddBall(width * 0.75f, height * 0.5f);
 		Utils.print("MyGame initialized");
+		SceneManager.ShowScenes();
+		SceneManager.ActivateScene("menu");
 	}
 
 	// ReSharper disable once UnusedMember.Local
 	private void Update()
 	{
-		PhysicsManager.Step();
+		// PhysicsManager.Step();
 
-		if (PhysicsManager.selectedBall != null)
-		{
-			//Draw Cue
-			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
-		}
+		// if (PhysicsManager.selectedBall != null)
+		// {
+		// 	//Draw Cue
+		// 	Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
+		// }
 		// Utils.print(GetDiagnostics());
 	}
 
