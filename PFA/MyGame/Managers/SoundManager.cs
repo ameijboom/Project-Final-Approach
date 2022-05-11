@@ -28,9 +28,11 @@ public static class SoundManager
 			SadCats.Add(new Sfx(file));
 		}
 
-		Background.Add(new Music("assets/bgm/mm_begin.mp3", false));
-		Background.Add(new Music("assets/bgm/mm_loop.mp3", true));
-		Background.Add(new Music("assets/bgm/pause.mp3", true));
+		Background.Add(new Music("assets/bgm/mm_begin.wav", false));
+		Background.Add(new Music("assets/bgm/mm_loop.wav", true));
+		Background.Add(new Music("assets/bgm/pause.wav", true));
+		Background.Add(new Music("assets/bgm/game.wav", true));
+
 	}
 
 	public static void PlayHappyCat()

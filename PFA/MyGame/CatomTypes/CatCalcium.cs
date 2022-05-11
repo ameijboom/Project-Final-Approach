@@ -12,7 +12,7 @@ public class CatCalcium : Catom
 	private const float MASS = 40.08f;
 	private const float ATTRACTION_COEFFICIENT = 32f;
 
-	public CatCalcium(Vec2 spawnPos) : base(spawnPos, RADIUS, MASS, ATTRACTION_COEFFICIENT, "calcium")
+	public CatCalcium(Vec2 spawnPos) : base(spawnPos, RADIUS, MASS, ATTRACTION_COEFFICIENT, "calcium", "CA")
 	{
 	}
 }

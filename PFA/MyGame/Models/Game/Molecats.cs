@@ -15,7 +15,7 @@ namespace PFA.MyGame.Models.Game
         private static Dictionary<string, int> NitrogenDioxide = new();
         private static Dictionary<string, int> SodiumNitrate = new();
 
-        public static ICollection<Dictionary<string, int>> molecats;
+        public static List<Dictionary<string, int>> molecats;
         static Molecats()
         {
             Water.Add("H", 2);

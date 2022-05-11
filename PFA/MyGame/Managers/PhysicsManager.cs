@@ -21,11 +21,13 @@ public static class PhysicsManager
 	private static readonly List<Ball> Balls = new();
 	private static readonly List<LineSegment> Lines = new();
 	private static bool _bSelectedLineStart = false;
+	private static Random rng = new Random(); 
 	private const float LINE_RADIUS = 20;
 
 	private static readonly MyGame Game;
 	private static Field BOX;
 	private static ICollection<string> Catoms = new List<string>() {"H", "O", "N", "C", "P", "Ca", "Na",};
+	public static List<Dictionary<string, int>> pairs = Molecats.molecats;
 
 	static PhysicsManager()
 	{
@@ -243,6 +245,8 @@ public static class PhysicsManager
 						Catom cTarget = (Catom) target;
 						if (cBall.ReadyToCombine || cTarget.ReadyToCombine)
 						{
+							// SoundManager.PlayHappyCat();
+							
 							if (!cTarget.Bros.Contains(cBall))
 							{
 								cTarget.Bros.Add(cBall);
@@ -254,6 +258,26 @@ public static class PhysicsManager
 								cBall.Bros.Add(cTarget);
 								cTarget.ReadyToCombine = false;
 							}
+
+							if (!pairs.First().ContainsKey(cBall.Symbol) || !pairs.First().ContainsKey(cTarget.Symbol))
+							{
+								SoundManager.PlaySadCat();
+								RemoveBall(cBall);
+								RemoveBall(cTarget);
+							} else
+							{
+								if (pairs.First()[cBall.Symbol] != 1)
+								{
+									pairs.First()[cBall.Symbol] -= 1;
+								} else
+								{
+									pairs.First().Remove(cBall.Symbol);
+								}
+
+								SoundManager.PlayHappyCat();
+							}
+
+							
 						}
 
 						// Make balls visually rotate
@@ -322,6 +346,8 @@ public static class PhysicsManager
 				AddBall(CreateCatom(catom));
 			}
 		}
+
+		pairs.Shuffle();
 	}
 
 	private static Catom CreateCatom(string symbol)
@@ -345,6 +371,18 @@ public static class PhysicsManager
 			default:
 				throw new Exception("Not a catom dummy >:(");
 		}
+	} 
+
+	public static void Shuffle<T>(this IList<T> list)  
+	{  
+		int n = list.Count;  
+		while (n > 1) {  
+			n--;  
+			int k = rng.Next(n + 1);  
+			T value = list[k];  
+			list[k] = list[n];  
+			list[n] = value;  
+		}  
 	}
 
 	public static void Step()

@@ -15,10 +15,11 @@ public class Catom : Ball
 	private const float SPACE_BETWEEN_CATOMS = 10f; // How far apart should the catoms try to be from each other?
 
 	public bool ReadyToCombine;
+	public string Symbol;
 	public readonly HashSet<Ball> Bros = new();
 	private readonly float _attractionCoefficient;
 
-	protected Catom(Vec2 spawnPos, float radius, float mass, float attractionCoefficient, string assetName = "circle") :
+	protected Catom(Vec2 spawnPos, float radius, float mass, float attractionCoefficient, string assetName = "circle", string symbol = "") :
 		base(spawnPos, radius * RADIUS_FAC, mass, assetName)
 	{
 		_attractionCoefficient = attractionCoefficient;

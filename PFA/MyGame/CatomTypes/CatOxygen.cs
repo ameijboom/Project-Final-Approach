@@ -12,7 +12,7 @@ public class CatOxygen : Catom
 	private const float MASS = 15.9994f;
 	private const float ATTRACTION_COEFFICIENT = 19f;
 
-	public CatOxygen(Vec2 spawnPos) : base(spawnPos, RADIUS, MASS, ATTRACTION_COEFFICIENT, "oxygen")
+	public CatOxygen(Vec2 spawnPos) : base(spawnPos, RADIUS, MASS, ATTRACTION_COEFFICIENT, "oxygen", "O")
 	{
 	}
 }

@@ -55,6 +55,11 @@ public class MyGame : Game
 			Console.WriteLine("Starting background infinite loop");
 		}
 
+		foreach(var k in PhysicsManager.pairs.First().Keys)
+		{
+			System.Console.WriteLine(k);
+		}
+
 		// Utils.print(GetDiagnostics());
 	}
 

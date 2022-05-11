@@ -12,7 +12,7 @@ public class CatSodium : Catom
 	private const float MASS = 22.98977f;
 	private const float ATTRACTION_COEFFICIENT = 23f;
 
-	public CatSodium(Vec2 spawnPos) : base(spawnPos, RADIUS, MASS, ATTRACTION_COEFFICIENT, "sodium")
+	public CatSodium(Vec2 spawnPos) : base(spawnPos, RADIUS, MASS, ATTRACTION_COEFFICIENT, "sodium", "Na")
 	{
 	}
 }
