@@ -13,7 +13,11 @@ public class Scene : GameObject
     {
         Path = path;
         Id = path.Replace(".scene.tmx", "");
-        Id = Id.Replace("./assets/scenes/", "");
+
+        if (Id.Contains("\\"))
+            Id = path.Replace("./assets/scenes\\", "");
+        
+        Id = path.Replace("./assets/scenes/", "");
     }
     
     public void Init()
