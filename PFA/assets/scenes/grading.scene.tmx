@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="23">
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="1" name="Grading Card" x="448" y="0" width="992" height="1088"/>
+  <object id="2" name="Expected Molecat" x="640" y="64" width="256" height="64"/>
+  <object id="3" name="Created Molecat" x="1024" y="64" width="256" height="64"/>
+  <object id="4" name="Expected Molecat" x="640" y="160" width="256" height="64"/>
+  <object id="5" name="Created Molecat" x="1024" y="160" width="256" height="64"/>
+  <object id="7" name="Expected Molecat" x="640" y="256" width="256" height="64"/>
+  <object id="8" name="Created Molecat" x="1024" y="256" width="256" height="64"/>
+  <object id="9" name="Expected Molecat" x="640" y="352" width="256" height="64"/>
+  <object id="10" name="Created Molecat" x="1024" y="352" width="256" height="64"/>
+  <object id="11" name="Expected Molecat" x="640" y="448" width="256" height="64"/>
+  <object id="12" name="Created Molecat" x="1024" y="448" width="256" height="64"/>
+  <object id="13" name="Expected Molecat" x="640" y="544" width="256" height="64"/>
+  <object id="14" name="Expected Molecat" x="640" y="640" width="256" height="64"/>
+  <object id="15" name="Expected Molecat" x="640" y="736" width="256" height="64"/>
+  <object id="16" name="Expected Molecat" x="640" y="832" width="256" height="64"/>
+  <object id="17" name="Created Molecat" x="1024" y="544" width="256" height="64"/>
+  <object id="18" name="Created Molecat" x="1024" y="640" width="256" height="64"/>
+  <object id="19" name="Created Molecat" x="1024" y="736" width="256" height="64"/>
+  <object id="20" name="Created Molecat" x="1024" y="832" width="256" height="64"/>
+  <object id="22" name="Return" x="832" y="960" width="288" height="96"/>
+ </objectgroup>
+</map>

@@ -364,7 +364,7 @@ namespace PFA.GXPEngine.AddOns {
 						} catch (Exception error) {
 							Console.WriteLine("Couldn't automatically create an AnimationSprite object from the Tiled (image) object with ID {0} and type {1}.\n Error: {2}", obj.ID, obj.Type, error.Message);
 							// Check the console for more information!
-							throw error;
+							throw;
 						}
 					}
 					if (anim==null) {
@@ -395,7 +395,7 @@ namespace PFA.GXPEngine.AddOns {
 						} catch (Exception error) {
 							Console.WriteLine("Couldn't automatically create a sprite object from the Tiled (shape) object with ID {0} and type {1}.\n Error: {2}", obj.ID, obj.Type, error.Message);
 							// Check the console for more information!
-							throw error;
+							throw;
 						}
 					}
 				}

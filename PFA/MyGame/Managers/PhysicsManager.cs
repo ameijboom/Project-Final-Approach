@@ -6,7 +6,7 @@ using PFA.GXPEngine.LinAlg;
 using PFA.GXPEngine.Utils;
 using PFA.MyGame.CatomTypes;
 
-namespace PFA.MyGame;
+namespace PFA.MyGame.Managers;
 
 public static class PhysicsManager
 {
