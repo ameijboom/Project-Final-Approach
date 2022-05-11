@@ -15,11 +15,11 @@ public class LineSegment : GameObject
 	public Vec2 End;
 	public readonly float Radius;
 
-	public LineSegment(float x1, float y1, float x2, float y2, float radius)
+	public LineSegment(Vec2 start, Vec2 end, float radius)
 	{
 		position = new Vec2(x, y);
-		Start = new Vec2(x1, y1);
-		End = new Vec2(x2, y2);
+		Start = start;
+		End = end;
 		Radius = radius;
 	}
 

@@ -35,7 +35,7 @@ public class Catom : Ball
 				position + Vec2.Random() * (Radius / 2f),
 				bro.position + Vec2.Random() * (bro.Radius / 2f),
 				colour: new Colour(255, 127),
-				width: 1);
+				width: 1); //TODO: Designer overhaul necessary
 
 			Vec2 diff = bro.position - position;
 			ApplyForce(Force(diff.Mag(), Radius + bro.Radius + SPACE_BETWEEN_CATOMS) * diff.Normalized());

@@ -1,59 +1,59 @@
 using PFA.MyGame.Models;
-using System.IO;
+using PFA.GXPEngine;
 
 namespace PFA.MyGame.Managers;
 
 public static class SceneManager
 {
-    private static Dictionary<string, Scene> Scenes = new();
-    private static Scene _currentScene;
+	private static readonly Dictionary<string, Scene> Scenes = new();
+	private static Scene _currentScene;
 
-    static SceneManager()
-    {
-        try 
-        {
-            AddScenes();
-        } catch(Exception)
-        {
-            System.Console.WriteLine($"There has been a problem loading in scenes from [{Path.GetFullPath("./assets/scenes")}]");
-            throw;
-        }
-    }
+	static SceneManager()
+	{
+		try
+		{
+			AddScenes();
+		} catch(Exception)
+		{
+			Console.WriteLine($"There has been a problem loading in scenes from [{Path.GetFullPath("./assets/scenes")}]");
+			throw;
+		}
+	}
 
-    private static void AddScenes()
-    {
-        string[] files = Directory.GetFiles("./assets/scenes");
+	private static void AddScenes()
+	{
+		string[] files = Directory.GetFiles("./assets/scenes");
 
-        foreach(var file in files)
-        {
-            var scene = new Scene(file);
-            Scenes.Add(scene.Id, scene);
-        }
-    }
+		foreach(string file in files)
+		{
+			Scene scene = new(file);
+			Scenes.Add(scene.Id, scene);
+		}
+	}
 
-    public static void ActivateScene(string scene)
-    {
-        if (_currentScene != null)
-            MyGame.main.RemoveChild(_currentScene);
-        
-        if (!Scenes.ContainsKey(scene))
-            throw new Exception($"Scene [{scene}] does not exist or could not be found on path [{Path.GetFullPath("./assets/scenes")}]");
-        
-        Scenes.TryGetValue(scene, out _currentScene);
+	public static void ActivateScene(string scene)
+	{
+		if (_currentScene != null)
+			Game.main.RemoveChild(_currentScene);
 
-        _currentScene.Init();
-        MyGame.main.AddChild(_currentScene);
-    }
+		if (!Scenes.ContainsKey(scene))
+			throw new Exception($"Scene [{scene}] does not exist or could not be found on path [{Path.GetFullPath("./assets/scenes")}]");
 
-    public static void ShowScenes()
-    {
-        var tmp = $"[{Scenes.Count}] Scenes in memory: ";
+		Scenes.TryGetValue(scene, out _currentScene);
 
-        foreach(Scene scene in Scenes.Values)
-        {
-            tmp += $"{scene.Id}, ";
-        }
+		_currentScene.Init();
+		Game.main.AddChild(_currentScene);
+	}
 
-        System.Console.WriteLine(tmp);
-    }
+	public static void ShowScenes()
+	{
+		string tmp = $"[{Scenes.Count}] Scenes in memory: ";
+
+		foreach(Scene scene in Scenes.Values)
+		{
+			tmp += $"{scene.Id}, ";
+		}
+
+		Console.WriteLine(tmp);
+	}
 }

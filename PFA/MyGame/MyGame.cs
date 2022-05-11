@@ -14,13 +14,13 @@ public class MyGame : Game
 {
 	public static float fElapsedTime = 0f;
 
-	private MyGame(int width, int height) : base(width, height, true, false)
+	private MyGame(int width, int height) : base(width, height, false, false)
 	{
 		targetFps = 30; //time for a console game
 		Utils.print("MyGame initialized");
 
 		// Play Main Menu beginning music
-		SoundManager.PlayBackground(SoundManager.BackgroundMusic.MmBegin);
+		SoundManager.PlayBackground(SoundManager.BGM.MmBegin);
 
 		SceneManager.ShowScenes();
 		SceneManager.ActivateScene("main");
@@ -44,20 +44,20 @@ public class MyGame : Game
 		if (PhysicsManager.selectedBall != null)
 		{
 			//Draw Cue
-			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
+			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue); //TODO: Designer overhaul necessary
 		}
 
 		// Play Main Menu infinite loop music
-		if (!SoundManager.GetBackground(SoundManager.BackgroundMusic.MmBegin).IsPlaying()
-		    && !SoundManager.GetBackground(SoundManager.BackgroundMusic.MmLoop).IsPlaying())
+		if (!SoundManager.GetBackground(SoundManager.BGM.MmBegin).IsPlaying()
+		    && !SoundManager.GetBackground(SoundManager.BGM.MmLoop).IsPlaying())
 		{
-			SoundManager.PlayBackground(SoundManager.BackgroundMusic.MmLoop);
+			SoundManager.PlayBackground(SoundManager.BGM.MmLoop);
 			Console.WriteLine("Starting background infinite loop");
 		}
 
-		foreach(var k in PhysicsManager.pairs.First().Keys)
+		foreach(string k in PhysicsManager.Pairs.First().Keys)
 		{
-			System.Console.WriteLine(k);
+			Console.WriteLine(k);
 		}
 
 		// Utils.print(GetDiagnostics());

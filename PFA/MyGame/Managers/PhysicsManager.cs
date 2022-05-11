@@ -20,19 +20,19 @@ public static class PhysicsManager
 
 	private static readonly List<Ball> Balls = new();
 	private static readonly List<LineSegment> Lines = new();
-	private static bool _bSelectedLineStart = false;
-	private static Random rng = new Random(); 
+	// private static bool _bSelectedLineStart = false;
+	private static Random rng = new Random();
 	private const float LINE_RADIUS = 20;
 
 	private static readonly MyGame Game;
-	private static Field BOX;
-	private static ICollection<string> Catoms = new List<string>() {"H", "O", "N", "C", "P", "Ca", "Na",};
-	public static List<Dictionary<string, int>> pairs = Molecats.molecats;
+	private static readonly Field Box;
+	private static readonly ICollection<string> Catoms = new List<string>() {"H", "O", "N", "C", "P", "Ca", "Na",};
+	public static readonly List<Dictionary<string, int>> Pairs = Molecats.molecats;
 
 	static PhysicsManager()
 	{
 		Game = (MyGame)GXPEngine.Game.main;
-		BOX = MyGame.main.FindObjectOfType<Field>();
+		Box = Game.FindObjectOfType<Field>();
 
 		//TODO (Alwin): Revamp these spawn conditions depending on the required molecats
 		// for (int i = 0; i < BALLS; i++)
@@ -56,12 +56,17 @@ public static class PhysicsManager
 		SpawnCatoms();
 
 
-		System.Console.WriteLine(MyGame.main.FindObjectOfType<Field>());
+		Console.WriteLine(GXPEngine.Game.main.FindObjectOfType<Field>());
 
-		AddLine(0, -LINE_RADIUS, BOX.width, -LINE_RADIUS); //top
-		AddLine(-LINE_RADIUS, 0, -LINE_RADIUS, BOX.height); //left
-		AddLine(0, BOX.height, BOX.width, BOX.height); //bottom
-		AddLine(BOX.width+LINE_RADIUS, 0, BOX.width+LINE_RADIUS, BOX.height); //right
+		Vec2 topLeft = new(-LINE_RADIUS, -LINE_RADIUS);
+		Vec2 bottomRight = new(Box.width + LINE_RADIUS, Game.height + LINE_RADIUS);
+		Vec2 topRight = new(Box.width + LINE_RADIUS, -LINE_RADIUS);
+		Vec2 bottomLeft = new(-LINE_RADIUS, Game.height + LINE_RADIUS);
+
+		AddLine(topLeft, topRight); //top
+		AddLine(topLeft, bottomLeft); //left
+		AddLine(bottomLeft, bottomRight); //bottom
+		AddLine(topRight, bottomRight); //right
 	}
 	private static void AddBall(Ball ball)
 	{
@@ -71,7 +76,7 @@ public static class PhysicsManager
 
 	private static Vec2 RandomSpawnPos()
 	{
-		return new Vec2(Utils.Random(0, BOX.width), Utils.Random(0, BOX.height - LINE_RADIUS));
+		return new Vec2(Utils.Random(0, Box.width), Utils.Random(0, Box.height - LINE_RADIUS));
 	}
 
 	public static void RemoveBall(Ball ball)
@@ -80,16 +85,16 @@ public static class PhysicsManager
 		Game.RemoveChild(ball);
 	}
 
-	private static void AddLine(float x1, float y1, float x2, float y2)
+	private static void AddLine(Vec2 start, Vec2 end)
 	{
-		LineSegment line = new(x1, y1, x2, y2, LINE_RADIUS);
+		LineSegment line = new(start, end, LINE_RADIUS);
 		Lines.Add(line);
 		Game.AddChild(line);
 	}
 
 	private static void MouseBehaviour()
 	{
-		if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+		if (/*Input.GetMouseButtonDown(0) || */Input.GetMouseButtonDown(1))
 		{
 			selectedBall = null;
 			foreach (Ball ball in Balls.Where(ball => Ball.IsPointInCircle(ball, Input.mouse)))
@@ -99,18 +104,20 @@ public static class PhysicsManager
 			}
 		}
 
-		if (Input.GetMouseButton(0))
-		{
-			if (selectedBall != null)
-			{
-				selectedBall.position = Input.mouse;
-			}
-		}
+		//Ball Dragging
+		// if (Input.GetMouseButton(0))
+		// {
+		// 	if (selectedBall != null)
+		// 	{
+		// 		selectedBall.position = Input.mouse;
+		// 	}
+		// }
 
-		if (Input.GetMouseButtonUp(0))
-		{
-			selectedBall = null;
-		}
+		//Ball Dragging
+		// if (Input.GetMouseButtonUp(0))
+		// {
+		// 	selectedBall = null;
+		// }
 
 		if (Input.GetMouseButtonUp(1))
 		{
@@ -166,16 +173,16 @@ public static class PhysicsManager
 #if DEBUG
 						Console.WriteLine("oh no at left");
 #endif
-						ball.CachedPosition.x = BOX.width/2f;
+						ball.CachedPosition.x = Box.width/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
-					if (ball.CachedPosition.x >= BOX.width + ball.Radius)
+					if (ball.CachedPosition.x >= Box.width + ball.Radius)
 					{
 #if DEBUG
 						Console.WriteLine("oh no at right");
 #endif
-						ball.CachedPosition.x = BOX.width/2f;
+						ball.CachedPosition.x = Box.width/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
@@ -184,16 +191,16 @@ public static class PhysicsManager
 #if DEBUG
 						Console.WriteLine("oh no at top");
 #endif
-						ball.CachedPosition.y = BOX.height/2f;
+						ball.CachedPosition.y = Box.height/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
-					if (ball.CachedPosition.y >= BOX.height + ball.Radius)
+					if (ball.CachedPosition.y >= Box.height + ball.Radius)
 					{
 #if DEBUG
 						Console.WriteLine("oh no at bottom");
 #endif
-						ball.CachedPosition.y = BOX.height/2f;
+						ball.CachedPosition.y = Box.height/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
@@ -246,7 +253,7 @@ public static class PhysicsManager
 						if (cBall.ReadyToCombine || cTarget.ReadyToCombine)
 						{
 							// SoundManager.PlayHappyCat();
-							
+
 							if (!cTarget.Bros.Contains(cBall))
 							{
 								cTarget.Bros.Add(cBall);
@@ -259,25 +266,25 @@ public static class PhysicsManager
 								cTarget.ReadyToCombine = false;
 							}
 
-							if (!pairs.First().ContainsKey(cBall.Symbol) || !pairs.First().ContainsKey(cTarget.Symbol))
+							if (!Pairs.First().ContainsKey(cBall.Symbol) || !Pairs.First().ContainsKey(cTarget.Symbol))
 							{
 								SoundManager.PlaySadCat();
 								RemoveBall(cBall);
 								RemoveBall(cTarget);
 							} else
 							{
-								if (pairs.First()[cBall.Symbol] != 1)
+								if (Pairs.First()[cBall.Symbol] != 1)
 								{
-									pairs.First()[cBall.Symbol] -= 1;
+									Pairs.First()[cBall.Symbol] -= 1;
 								} else
 								{
-									pairs.First().Remove(cBall.Symbol);
+									Pairs.First().Remove(cBall.Symbol);
 								}
 
 								SoundManager.PlayHappyCat();
 							}
 
-							
+
 						}
 
 						// Make balls visually rotate
@@ -347,42 +354,32 @@ public static class PhysicsManager
 			}
 		}
 
-		pairs.Shuffle();
+		Pairs.Shuffle();
 	}
 
 	private static Catom CreateCatom(string symbol)
 	{
-		switch(symbol)
+		return symbol switch
 		{
-			case "H":
-				return new CatHydrogen(RandomSpawnPos());
-			case "O":
-				return new CatOxygen(RandomSpawnPos());
-			case "N":
-				return new CatNitrogen(RandomSpawnPos());
-			case "C":
-				return new CatCarbon(RandomSpawnPos());
-			case "P":
-				return new CatPhosphorus(RandomSpawnPos());
-			case "Ca":
-				return new CatCalcium(RandomSpawnPos());
-			case "Na":
-				return new CatSodium(RandomSpawnPos());
-			default:
-				throw new Exception("Not a catom dummy >:(");
-		}
-	} 
+			"H" => new CatHydrogen(RandomSpawnPos()),
+			"O" => new CatOxygen(RandomSpawnPos()),
+			"N" => new CatNitrogen(RandomSpawnPos()),
+			"C" => new CatCarbon(RandomSpawnPos()),
+			"P" => new CatPhosphorus(RandomSpawnPos()),
+			"Ca" => new CatCalcium(RandomSpawnPos()),
+			"Na" => new CatSodium(RandomSpawnPos()),
+			_ => throw new Exception("Not a catom dummy >:("),
+		};
+	}
 
-	public static void Shuffle<T>(this IList<T> list)  
-	{  
-		int n = list.Count;  
-		while (n > 1) {  
-			n--;  
-			int k = rng.Next(n + 1);  
-			T value = list[k];  
-			list[k] = list[n];  
-			list[n] = value;  
-		}  
+	private static void Shuffle<T>(this IList<T> list)
+	{
+		int n = list.Count;
+		while (n > 1) {
+			n--;
+			int k = rng.Next(n + 1);
+			(list[k], list[n]) = (list[n], list[k]);
+		}
 	}
 
 	public static void Step()
