@@ -26,7 +26,7 @@ public class LineSegment : GameObject
 	// ReSharper disable once UnusedMember.Global
 	public void Update()
 	{
-		Render();
+		// Render();
 	}
 
 	private void Render()

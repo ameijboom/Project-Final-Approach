@@ -1,22 +1,22 @@
-﻿// Author: TechnicJelle
+// Author: TechnicJelle
 // Copyright (c) TechnicJelle. All rights reserved.
 // You're allowed to learn from this, but please do not simply copy.
 
 using PFA.GXPEngine.LinAlg;
 using PFA.GXPEngine.Utils;
 using PFA.MyGame.CatomTypes;
+using PFA.MyGame.Models.Game;
 
 namespace PFA.MyGame.Managers;
 
 public static class PhysicsManager
 {
-	private const int BALLS = 50;
+	// private const int BALLS = 50;
 	private const float SHOOT_FORCE = 100f;
-	private const float PLAY_AREA_HEIGHT_FAC = 0.9f;
 	private const float CONNECTED_BALL_DAMP_FAC = 0.0f;
 
 	public static Ball? selectedBall { get; private set; } = null;
-	private static LineSegment? _selectedLine = null;
+	// private static LineSegment? _selectedLine = null;
 
 	private static readonly List<Ball> Balls = new();
 	private static readonly List<LineSegment> Lines = new();
@@ -24,45 +24,52 @@ public static class PhysicsManager
 	private const float LINE_RADIUS = 20;
 
 	private static readonly MyGame Game;
+	private static Field BOX;
+	private static ICollection<string> Catoms = new List<string>() {"H", "O", "N", "C", "P", "Ca", "Na",};
 
 	static PhysicsManager()
 	{
-		void AddBall(Ball ball)
-		{
-			Balls.Add(ball);
-			Game.AddChild(ball);
-		}
-
 		Game = (MyGame)GXPEngine.Game.main;
+		BOX = MyGame.main.FindObjectOfType<Field>();
 
 		//TODO (Alwin): Revamp these spawn conditions depending on the required molecats
-		for (int i = 0; i < BALLS; i++)
-		{
-			Vec2 spawnPos = RandomSpawnPos();
-			Catom catom = Utils.Random(0, 6) switch
-			{
-				0 => new CatCalcium(spawnPos),
-				1 => new CatCarbon(spawnPos),
-				2 => new CatHydrogen(spawnPos),
-				3 => new CatNitrogen(spawnPos),
-				4 => new CatOxygen(spawnPos),
-				5 => new CatPhosphorus(spawnPos),
-				6 => new CatSodium(spawnPos),
-				_ => throw new Exception("aa"),
-			};
+		// for (int i = 0; i < BALLS; i++)
+		// {
+		// 	Vec2 spawnPos = RandomSpawnPos();
+		// 	Catom catom = Utils.Random(0, 6) switch
+		// 	{
+		// 		0 => new CatCalcium(spawnPos),
+		// 		1 => new CatCarbon(spawnPos),
+		// 		2 => new CatHydrogen(spawnPos),
+		// 		3 => new CatNitrogen(spawnPos),
+		// 		4 => new CatOxygen(spawnPos),
+		// 		5 => new CatPhosphorus(spawnPos),
+		// 		6 => new CatSodium(spawnPos),
+		// 		_ => throw new Exception("aa"),
+		// 	};
 
-			AddBall(catom);
-		}
+		// 	AddBall(catom);
+		// }
 
-		AddLine(0, -LINE_RADIUS, Game.width, -LINE_RADIUS); //top
-		AddLine(-LINE_RADIUS, 0, -LINE_RADIUS, Game.height); //left
-		AddLine(0, Game.height * PLAY_AREA_HEIGHT_FAC, Game.width, Game.height * PLAY_AREA_HEIGHT_FAC); //bottom
-		AddLine(Game.width+LINE_RADIUS, 0, Game.width+LINE_RADIUS, Game.height); //right
+		SpawnCatoms();
+
+
+		System.Console.WriteLine(MyGame.main.FindObjectOfType<Field>());
+
+		AddLine(0, -LINE_RADIUS, BOX.width, -LINE_RADIUS); //top
+		AddLine(-LINE_RADIUS, 0, -LINE_RADIUS, BOX.height); //left
+		AddLine(0, BOX.height, BOX.width, BOX.height); //bottom
+		AddLine(BOX.width+LINE_RADIUS, 0, BOX.width+LINE_RADIUS, BOX.height); //right
+	}
+	private static void AddBall(Ball ball)
+	{
+		Balls.Add(ball);
+		Game.AddChild(ball);
 	}
 
 	private static Vec2 RandomSpawnPos()
 	{
-		return new Vec2(Utils.Random(0, Game.width), Utils.Random(0, Game.height * PLAY_AREA_HEIGHT_FAC - LINE_RADIUS));
+		return new Vec2(Utils.Random(0, BOX.width), Utils.Random(0, BOX.height - LINE_RADIUS));
 	}
 
 	public static void RemoveBall(Ball ball)
@@ -88,25 +95,6 @@ public static class PhysicsManager
 				selectedBall = ball;
 				break;
 			}
-
-			// Check for selected line segment end
-			_selectedLine = null;
-			foreach (LineSegment line in Lines)
-			{
-				if (Ball.IsPointInCircle(line.Start, line.Radius, Input.mouse))
-				{
-					_selectedLine = line;
-					_bSelectedLineStart = true;
-					break;
-				}
-
-				if (Ball.IsPointInCircle(line.End, line.Radius, Input.mouse))
-				{
-					_selectedLine = line;
-					_bSelectedLineStart = false;
-					break;
-				}
-			}
 		}
 
 		if (Input.GetMouseButton(0))
@@ -115,20 +103,11 @@ public static class PhysicsManager
 			{
 				selectedBall.position = Input.mouse;
 			}
-
-			if (_selectedLine != null)
-			{
-				if (_bSelectedLineStart)
-					_selectedLine.Start = Input.mouse;
-				else
-					_selectedLine.End = Input.mouse;
-			}
 		}
 
 		if (Input.GetMouseButtonUp(0))
 		{
 			selectedBall = null;
-			_selectedLine = null;
 		}
 
 		if (Input.GetMouseButtonUp(1))
@@ -185,16 +164,16 @@ public static class PhysicsManager
 #if DEBUG
 						Console.WriteLine("oh no at left");
 #endif
-						ball.CachedPosition.x = Game.width/2f;
+						ball.CachedPosition.x = BOX.width/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
-					if (ball.CachedPosition.x >= Game.width + ball.Radius)
+					if (ball.CachedPosition.x >= BOX.width + ball.Radius)
 					{
 #if DEBUG
 						Console.WriteLine("oh no at right");
 #endif
-						ball.CachedPosition.x = Game.width/2f;
+						ball.CachedPosition.x = BOX.width/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
@@ -203,16 +182,16 @@ public static class PhysicsManager
 #if DEBUG
 						Console.WriteLine("oh no at top");
 #endif
-						ball.CachedPosition.y = Game.height/2f;
+						ball.CachedPosition.y = BOX.height/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
-					if (ball.CachedPosition.y >= Game.height + ball.Radius)
+					if (ball.CachedPosition.y >= BOX.height + ball.Radius)
 					{
 #if DEBUG
 						Console.WriteLine("oh no at bottom");
 #endif
-						ball.CachedPosition.y = Game.height/2f;
+						ball.CachedPosition.y = BOX.height/2f;
 						ball.Velocity.Limit(Ball.START_SPEED);
 					}
 
@@ -331,6 +310,40 @@ public static class PhysicsManager
 				// Remove collisions
 				collidingPairs.Clear();
 			}
+		}
+	}
+
+	private static void SpawnCatoms()
+	{
+		foreach(string catom in Catoms)
+		{
+			for(int i = 0; i < Molecats.GetCatomCount(catom); i++)
+			{
+				AddBall(CreateCatom(catom));
+			}
+		}
+	}
+
+	private static Catom CreateCatom(string symbol)
+	{
+		switch(symbol)
+		{
+			case "H":
+				return new CatHydrogen(RandomSpawnPos());
+			case "O":
+				return new CatOxygen(RandomSpawnPos());
+			case "N":
+				return new CatNitrogen(RandomSpawnPos());
+			case "C":
+				return new CatCarbon(RandomSpawnPos());
+			case "P":
+				return new CatPhosphorus(RandomSpawnPos());
+			case "Ca":
+				return new CatCalcium(RandomSpawnPos());
+			case "Na":
+				return new CatSodium(RandomSpawnPos());
+			default:
+				throw new Exception("Not a catom dummy >:(");
 		}
 	}
 

@@ -20,6 +20,8 @@ public class Scene : GameObject
 	public void Init()
 	{
 		_loader = new TiledLoader(Path);
+
+		CreateLevel();
 	}
 
     private void CreateLevel()

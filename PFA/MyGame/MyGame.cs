@@ -14,33 +14,39 @@ public class MyGame : Game
 {
 	public static float fElapsedTime = 0f;
 
-	private MyGame(int width, int height) : base(width, height, false, false)
+	private MyGame(int width, int height) : base(width, height, true, false)
 	{
 		targetFps = 30; //time for a console game
 		Utils.print("MyGame initialized");
 		SceneManager.ShowScenes();
-		SceneManager.ActivateScene("menu");
+		SceneManager.ActivateScene("main");
 	}
 
 	// ReSharper disable once UnusedMember.Local
 	private void Update()
 	{
+		// if (Input.GetKeyDown(Key.BACKSPACE))
+		// {
+		// 	System.Console.WriteLine("Press");
+		// 	SceneManager.ActivateScene("main");
+		// }
+
 		fElapsedTime = Time.deltaTime / 1000f;
-#if DEBUG
-		Utils.print("FPS: " + currentFps, "fElapsedTime: " + fElapsedTime);
-#endif
+// #if DEBUG
+// 		Utils.print("FPS: " + currentFps, "fElapsedTime: " + fElapsedTime);
+// #endif
 		PhysicsManager.Step();
 
-		// if (PhysicsManager.selectedBall != null)
-		// {
-		// 	//Draw Cue
-		// 	Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
-		// }
+		if (PhysicsManager.selectedBall != null)
+		{
+			//Draw Cue
+			Gizmos.DrawLine(PhysicsManager.selectedBall.CachedPosition, Input.mouse, colour:Colour.Blue);
+		}
 		// Utils.print(GetDiagnostics());
 	}
 
 	private static void Main()
 	{
-		new MyGame(1600, 900).Start();
+		new MyGame(1920, 1080).Start();
 	}
 }

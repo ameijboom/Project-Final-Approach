@@ -13,7 +13,7 @@ public static class SceneManager
         try 
         {
             AddScenes();
-        } catch(Exception except)
+        } catch(Exception)
         {
             System.Console.WriteLine($"There has been a problem loading in scenes from [{Path.GetFullPath("./assets/scenes")}]");
             throw;
@@ -40,6 +40,8 @@ public static class SceneManager
             throw new Exception($"Scene [{scene}] does not exist or could not be found on path [{Path.GetFullPath("./assets/scenes")}]");
         
         Scenes.TryGetValue(scene, out _currentScene);
+
+        _currentScene.Init();
         MyGame.main.AddChild(_currentScene);
     }
 
