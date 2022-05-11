@@ -9,21 +9,18 @@ public class Scene : GameObject
     public string Id { get; set; }
     public string Path { get; set; }
 
-    public Scene(string path)
-    {
-        Path = path;
-        Id = path.Replace(".scene.tmx", "");
+	public Scene(string path)
+	{
+		Path = path;
+		string fileName = System.IO.Path.GetFileName(Path);
+		string[] strings = fileName.Split('.');
+		Id = strings[0];
+	}
 
-        if (Id.Contains("\\"))
-            Id = path.Replace("./assets/scenes\\", "");
-        
-        Id = path.Replace("./assets/scenes/", "");
-    }
-    
-    public void Init()
-    {
-        _loader = new TiledLoader(Path);
-    }
+	public void Init()
+	{
+		_loader = new TiledLoader(Path);
+	}
 
     private void CreateLevel()
     {
