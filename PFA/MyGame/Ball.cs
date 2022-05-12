@@ -45,6 +45,8 @@ public class Ball : Sprite
 
 		SetAngularVelocity();
 		// Utils.print(this, _angularVelocity);
+
+		blendMode = BlendMode.PREMULTIPLIED;
 	}
 
 	public void SetAngularVelocity()

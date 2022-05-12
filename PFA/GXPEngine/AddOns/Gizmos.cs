@@ -274,17 +274,17 @@ public static class Gizmos
 	/// Draws an axis-aligned rectangle centered at a given point, with a given size
 	/// </summary>
 	/// <seealso cref="M:PFA.GXPEngine.AddOns.Gizmos.DrawLine(PFA.GXPEngine.LinAlg.Vec2,PFA.GXPEngine.LinAlg.Vec2,PFA.GXPEngine.GameObject,PFA.GXPEngine.Core.Colour,System.Single)"/>
-	public static void DrawRectangle(Vec2 center, Vec2 size,
+	public static void DrawRectangleCenter(Vec2 center, Vec2 size,
 		GameObject? space = null, Colour colour = new(), float lineWidth = 0)
 	{
-		DrawRectangle(center.x, center.y, size.x, size.y, space, colour, lineWidth);
+		DrawRectangleCenter(center.x, center.y, size.x, size.y, space, colour, lineWidth);
 	}
 
 	/// <summary>
 	/// Draws an axis-aligned rectangle centered at a given (x, y) coordinate, with given width and height, using DrawLine.
 	/// </summary>
 	/// <seealso cref="M:PFA.GXPEngine.AddOns.Gizmos.DrawLine(PFA.GXPEngine.LinAlg.Vec2,PFA.GXPEngine.LinAlg.Vec2,PFA.GXPEngine.GameObject,PFA.GXPEngine.Core.Colour,System.Single)"/>
-	public static void DrawRectangle(float xCenter, float yCenter, float width, float height,
+	public static void DrawRectangleCenter(float xCenter, float yCenter, float width, float height,
 		GameObject? space = null, Colour colour = new(), float lineWidth = 0)
 	{
 		DrawLine(xCenter - width / 2, yCenter - height / 2, xCenter + width / 2, yCenter - height / 2, space, colour, lineWidth);
