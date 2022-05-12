@@ -14,7 +14,7 @@ namespace PFA.MyGame.Managers;
 public static class PhysicsManager
 {
 	// private const int BALLS = 50;
-	private const float SHOOT_FORCE = 100f;
+	private const float SHOOT_FORCE = 300f;
 	private const float CONNECTED_BALL_DAMP_FAC = 0.0f;
 
 	public static Ball? selectedBall { get; private set; } = null;
