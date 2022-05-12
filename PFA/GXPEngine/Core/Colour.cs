@@ -112,6 +112,11 @@ public struct Colour
 		_colour = color;
 	}
 
+	public Colour(Colour colour, byte a = 255)
+	{
+		_colour = new SKColor(colour.r, colour.g, colour.b, a);
+	}
+
 	/// <summary>
 	/// Make a new RGB colour
 	/// </summary>

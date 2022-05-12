@@ -29,7 +29,11 @@ public class Catom : Ball
 	public new void Update()
 	{
 		base.Update();
-		Colour = ReadyToCombine ? Colour.Fuchsia : Colour.White;
+		if (ReadyToCombine && Velocity.MagSq() < MAX_SPEED)
+		{
+			ReadyToCombine = false;
+		}
+		Colour = ReadyToCombine ? new Colour(235, 185, 202, 120) : Colour.White;
 		foreach (Ball bro in Bros)
 		{
 			Gizmos.DrawLine(position, bro.position, colour: new Colour(255, 164), width: 10);

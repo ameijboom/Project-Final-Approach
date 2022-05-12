@@ -12,7 +12,7 @@ namespace PFA.MyGame;
 
 public class Ball : Sprite
 {
-	private const float MAX_SPEED = 10000f; // How fast a ball may go at maximum
+	protected const float MAX_SPEED = 10000f; // How fast a ball may go at maximum
 	private const float DRAG_FAC = 0.98f; // If it's above the MAX_SPEED, it will slow down by this factor
 	public const float START_SPEED = 10f; // How fast a ball starts
 	private const float MAX_ANGULAR_SPEED = 3f; // How fast a ball may spin at maximum
