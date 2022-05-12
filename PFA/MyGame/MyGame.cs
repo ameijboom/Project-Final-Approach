@@ -85,13 +85,16 @@ public class MyGame : Game
 		Canvas.Text(text, x, y);
 	}
 
-	public static string MolecatToMake()
+	public static string MolecatToMake(Dictionary<string, int> molecat = null)
 	{
+		if (molecat == null)
+			molecat = PhysicsManager.Pairs.First();
+
 		string molecatToMake = "";
-		foreach(string k in PhysicsManager.Pairs.First().Keys)
+		foreach(string k in molecat.Keys)
 		{
 			molecatToMake+=k;
-			molecatToMake+=PhysicsManager.Pairs.First()[k];
+			molecatToMake+=molecat[k];
 		}
 		return molecatToMake;
 	}

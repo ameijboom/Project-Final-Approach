@@ -32,6 +32,8 @@ public static class PhysicsManager
 	private static readonly ICollection<string> Catoms = new List<string>() {"H", "O", "N", "C", "P", "Ca", "Na",};
 	private static HashSet<Catom> Molecat = new();
 	public static readonly List<Dictionary<string, int>> Pairs = Molecats.molecats;
+	public static readonly Dictionary<Dictionary<string, int>, Dictionary<string, int>> CreatedPairs = new();
+
 
 	static PhysicsManager()
 	{
@@ -229,8 +231,8 @@ public static class PhysicsManager
 						{
 							if (!Pairs.First().ContainsKey(cBall.Symbol) || !Pairs.First().ContainsKey(cTarget.Symbol))
 							{
-								System.Console.WriteLine(cTarget.Bros.Count);
-								List<Catom> bad = new();
+								// System.Console.WriteLine(cTarget.Bros.Count);
+								HashSet<Catom> bad = new();
 								foreach (Catom cm in Balls.Cast<Catom>())
 								{
 									if (Molecat.Contains(cm))
@@ -252,8 +254,9 @@ public static class PhysicsManager
 								}
 
 								SoundManager.PlaySadCat();
-							}
-							else
+								CheckMolecat(bad);
+
+							} else
 							{
 								if (Pairs.First()[cBall.Symbol] != 1)
 								{
@@ -281,6 +284,8 @@ public static class PhysicsManager
 								cBall.Bros.Add(cTarget);
 								cTarget.ReadyToCombine = false;
 							}
+
+							// if()
 						}
 
 						// Make balls visually rotate
@@ -393,5 +398,27 @@ public static class PhysicsManager
 			BallsToRemove.Remove(ball);
 			Balls.Remove(ball);
 		}
+	}
+
+	private static Dictionary<string, int> TurnCatomsToMolecat(HashSet<Catom> molecat)
+	{
+		Dictionary<string, int> MolecatDictionary =  new();
+		foreach(Catom catom in molecat)
+		{
+			if (!MolecatDictionary.ContainsKey(catom.Symbol))
+				MolecatDictionary.Add(catom.Symbol, 1);
+			else
+				MolecatDictionary[catom.Symbol] += 1;
+		}
+
+		return MolecatDictionary;
+	}
+
+	public static void CheckMolecat(HashSet<Catom> molecat)
+	{
+		var MolecatDictionary = TurnCatomsToMolecat(molecat);
+
+		if (MolecatDictionary == Pairs.First())
+			Pairs.Remove(Pairs.First());
 	}
 }
