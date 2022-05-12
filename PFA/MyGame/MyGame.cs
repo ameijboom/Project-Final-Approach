@@ -16,14 +16,17 @@ public class MyGame : Game
 
 	private MyGame(int width, int height) : base(1920, 1080, false, false, width, height)
 	{
-		targetFps = 30; //time for a console game
+		// targetFps = 30; //time for a console game
 		Utils.print("MyGame initialized");
 
 		// Play Main Menu beginning music
-		SoundManager.PlayBackground(SoundManager.BGM.MmBegin);
+		SoundManager.PlayBackground(SoundManager.BGM.Game);
 
 		SceneManager.ShowScenes();
 		SceneManager.ActivateScene("main");
+
+		System.Console.WriteLine(MolecatToMake());
+
 	}
 
 	// ReSharper disable once UnusedMember.Local
@@ -48,19 +51,26 @@ public class MyGame : Game
 		}
 
 		// Play Main Menu infinite loop music
-		if (!SoundManager.GetBackground(SoundManager.BGM.MmBegin).IsPlaying()
-		    && !SoundManager.GetBackground(SoundManager.BGM.MmLoop).IsPlaying())
-		{
-			SoundManager.PlayBackground(SoundManager.BGM.MmLoop);
-			Console.WriteLine("Starting background infinite loop");
-		}
-
-		// foreach(string k in PhysicsManager.Pairs.First().Keys)
+		// if (!SoundManager.GetBackground(SoundManager.BGM.MmBegin).IsPlaying()
+		//     && !SoundManager.GetBackground(SoundManager.BGM.MmLoop).IsPlaying())
 		// {
-		// 	Console.WriteLine(k);
+		// 	SoundManager.PlayBackground(SoundManager.BGM.MmLoop);
+		// 	Console.WriteLine("Starting background infinite loop");
 		// }
 
+
+
 		// Utils.print(GetDiagnostics());
+	}
+
+	public string MolecatToMake() {
+		string MolecatToMake = "";
+		foreach(string k in PhysicsManager.Pairs.First().Keys)
+		{
+			MolecatToMake+=k;
+			MolecatToMake+=PhysicsManager.Pairs.First()[k];
+		}
+		return MolecatToMake;
 	}
 
 	private static void Main()
