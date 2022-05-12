@@ -1,5 +1,6 @@
 using PFA.GXPEngine;
 using PFA.GXPEngine.AddOns;
+using PFA.MyGame.Managers;
 
 namespace PFA.MyGame.Models.Game
 {
@@ -7,7 +8,12 @@ namespace PFA.MyGame.Models.Game
     {
         public Next(TiledObject obj = null) : base("./assets/UI/next.png", addCollider: false)
         {
-            // game.AddChild(this);
+
+        }
+
+        void Update()
+        {
+            MyGame.Text(MyGame.MolecatToMake(), x, y);
         }
     }
 }

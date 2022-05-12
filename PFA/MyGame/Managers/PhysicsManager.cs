@@ -33,6 +33,7 @@ public static class PhysicsManager
 	private static HashSet<Catom> Molecat = new();
 	public static readonly List<Dictionary<string, int>> Pairs = Molecats.molecats;
 	public static readonly Dictionary<Dictionary<string, int>, Dictionary<string, int>> CreatedPairs = new();
+	public static int Score = 9;
 
 
 	static PhysicsManager()
@@ -227,48 +228,61 @@ public static class PhysicsManager
 
 						Catom cBall = (Catom) ball;
 						Catom cTarget = (Catom) target;
+
+						bool DontMind = false;
 						if (cBall.ReadyToCombine || cTarget.ReadyToCombine)
 						{
 							if (!Pairs.First().ContainsKey(cBall.Symbol) || !Pairs.First().ContainsKey(cTarget.Symbol))
 							{
-								// System.Console.WriteLine(cTarget.Bros.Count);
-								HashSet<Catom> bad = new();
-								foreach (Catom cm in Balls.Cast<Catom>())
+								if (!DontMind)
 								{
-									if (Molecat.Contains(cm))
+									HashSet<Catom> bad = new();
+									foreach (Catom cm in Balls.Cast<Catom>())
 									{
-										// Molecat.Add(cm);
-										continue;
+										if (Molecat.Contains(cm))
+										{
+											// Molecat.Add(cm);
+											continue;
+										}
+
+										bad.Add(cm);
 									}
 
-									bad.Add(cm);
+									if (bad.Contains(cBall))
+									{
+										RemoveBall(cBall);
+									}
+									else if (bad.Contains(cTarget))
+									{
+										RemoveBall(cTarget);
+									}
+
+									SoundManager.PlaySadCat();
+									// CheckMolecat(bad);
+
+									CreatedPairs.Add(Pairs.First(), TurnCatomsToMolecat(bad));
+									Pairs.Remove(Pairs.First());
+
+									foreach(Catom cat in Molecat)
+									{
+										RemoveBall(cat);
+									}
+
+									Score--;
 								}
 
-								if (bad.Contains(cBall))
-								{
-									RemoveBall(cBall);
-								}
-								else if (bad.Contains(cTarget))
-								{
-									RemoveBall(cTarget);
-								}
-
-								SoundManager.PlaySadCat();
-								CheckMolecat(bad);
+								DontMind = false;
+								// System.Console.WriteLine(cTarget.Bros.Count);
 
 							} else
 							{
-								if (Pairs.First()[cBall.Symbol] != 1)
-								{
-									Pairs.First()[cBall.Symbol] -= 1;
-								} else
-								{
-									Pairs.First().Remove(cBall.Symbol);
-								}
-
+								DontMind = ModifyMolecat(cBall, cTarget);
 								SoundManager.PlayHappyCat();
 								Molecat.Add(cBall);
 								Molecat.Add(cTarget);
+
+								// System.Console.WriteLine(MyGame.MolecatToMake(TurnCatomsToMolecat(Molecat)));
+
 
 							}
 							SoundManager.PlayHappyCat();
@@ -285,7 +299,7 @@ public static class PhysicsManager
 								cTarget.ReadyToCombine = false;
 							}
 
-							// if()
+							CheckMolecat(Molecat);
 						}
 
 						// Make balls visually rotate
@@ -398,6 +412,11 @@ public static class PhysicsManager
 			BallsToRemove.Remove(ball);
 			Balls.Remove(ball);
 		}
+
+		if (Score <= 5)
+		{
+			SceneManager.ActivateScene("grading");
+		}
 	}
 
 	private static Dictionary<string, int> TurnCatomsToMolecat(HashSet<Catom> molecat)
@@ -414,11 +433,73 @@ public static class PhysicsManager
 		return MolecatDictionary;
 	}
 
+	private static bool ModifyMolecat(Catom ball, Catom target)
+	{
+		var DontMind = false;
+		Catom c = null;
+		// if (Molecat.Contains(cBall) && Molecat.Count != 0)
+		// 	cat = cTarget;
+
+		// if (Pairs.First()[cat.Symbol] != 0)
+		// {
+		// 	Pairs.First()[cat.Symbol] -= 1;
+		// }
+
+		// if (Pairs.First()[cat.Symbol] == 0)
+		// {
+		// 	Pairs.First().Remove(cat.Symbol);
+		// 	DontMind = true;
+		// }
+		System.Console.WriteLine(Molecat.Count);
+
+		if (Molecat.Count >= 1)
+		{
+			if (Molecat.Contains(ball))
+				c = target;
+			
+			if (Molecat.Contains(target))
+				c = ball;
+			
+			if (Pairs.First()[c.Symbol] != 0)
+				Pairs.First()[c.Symbol]--;
+
+			if (Pairs.First()[c.Symbol] == 0)
+			{
+				Pairs.First().Remove(c.Symbol);
+				DontMind = true;
+			}
+		} else {
+			if (Pairs.First()[ball.Symbol] != 0)
+				Pairs.First()[ball.Symbol]--;
+
+			if (Pairs.First()[ball.Symbol] == 0)
+			{
+				Pairs.First().Remove(ball.Symbol);
+				DontMind = true;
+			}
+			if (Pairs.First()[target.Symbol] != 0)
+				Pairs.First()[target.Symbol]--;
+
+			if (Pairs.First()[target.Symbol] == 0)
+			{
+				Pairs.First().Remove(target.Symbol);
+				DontMind = true;
+			}
+		}
+		return DontMind;
+	}
+
 	public static void CheckMolecat(HashSet<Catom> molecat)
 	{
 		var MolecatDictionary = TurnCatomsToMolecat(molecat);
 
-		if (MolecatDictionary == Pairs.First())
+		System.Console.WriteLine(MyGame.MolecatToMake(MolecatDictionary.OrderBy(a => a.Key).ToDictionary(obj => obj.Key, obj => obj.Value)));
+		System.Console.WriteLine(MyGame.MolecatToMake(Pairs.First().OrderBy(a => a.Key).ToDictionary(obj => obj.Key, obj => obj.Value)));
+
+		if (MolecatDictionary.OrderBy(a => a.Key) == Pairs.First().OrderBy(a => a.Key))
 			Pairs.Remove(Pairs.First());
+			
+		
+		System.Console.WriteLine(MyGame.MolecatToMake(Pairs.First()));
 	}
 }

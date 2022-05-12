@@ -16,6 +16,7 @@ public class MyGame : Game
 	public static float fElapsedTime = 0f;
 
 	public static EasyDraw Canvas;
+	private static Dictionary<string, int> Molecat = new();
 
 	private MyGame(int width, int height) : base(1920, 1080, false, false, width, height)
 	{
@@ -36,8 +37,14 @@ public class MyGame : Game
 		AddChild(Canvas);
 		Canvas.blendMode = BlendMode.PREMULTIPLIED;
 
-		Console.WriteLine(MolecatToMake());
+		// Console.WriteLine(MolecatToMake());
+		// Molecat.Add(PhysicsManager.Pairs.First().First().Key, PhysicsManager.Pairs.First().First().Value);
 
+		foreach(KeyValuePair<string, int> catom in PhysicsManager.Pairs.First())
+		{
+			Molecat.Add(catom.Key, catom.Value);
+		}
+		
 	}
 
 	// ReSharper disable once UnusedMember.Local
@@ -72,6 +79,8 @@ public class MyGame : Game
 		// }
 
 		// Utils.print(GetDiagnostics());
+
+		// System.Console.WriteLine(MolecatToMake(PhysicsManager.Pairs.First()));
 	}
 
 	public static void Text(string text, float x, float y, float size = 72)
@@ -88,7 +97,7 @@ public class MyGame : Game
 	public static string MolecatToMake(Dictionary<string, int> molecat = null)
 	{
 		if (molecat == null)
-			molecat = PhysicsManager.Pairs.First();
+			molecat = Molecat;
 
 		string molecatToMake = "";
 		foreach(string k in molecat.Keys)
