@@ -7,12 +7,15 @@ using PFA.GXPEngine.AddOns;
 using PFA.GXPEngine.Core;
 using PFA.GXPEngine.Utils;
 using PFA.MyGame.Managers;
+using SkiaSharp;
 
 namespace PFA.MyGame;
 
 public class MyGame : Game
 {
 	public static float fElapsedTime = 0f;
+
+	public static EasyDraw Canvas;
 
 	private MyGame(int width, int height) : base(1920, 1080, false, false, width, height)
 	{
@@ -25,6 +28,14 @@ public class MyGame : Game
 		SceneManager.ShowScenes();
 		SceneManager.ActivateScene("main");
 
+		Canvas = new EasyDraw(this.width, this.height, false);
+		SKTypeface skTypeface = SKTypeface.FromFile("./assets/font/ZueyHandwriting-Regular.otf");
+		SKFont newFont = new(skTypeface);
+		Canvas.TextFont(newFont);
+		// Canvas.TextFont("Comic Sans MS", 72);
+		AddChild(Canvas);
+		Canvas.blendMode = BlendMode.PREMULTIPLIED;
+    
 		System.Console.WriteLine(MolecatToMake());
 
 	}
@@ -32,6 +43,8 @@ public class MyGame : Game
 	// ReSharper disable once UnusedMember.Local
 	private void Update()
 	{
+		Canvas.ClearTransparent();
+
 		// if (Input.GetKeyDown(Key.BACKSPACE))
 		// {
 		// 	System.Console.WriteLine("Press");
@@ -63,7 +76,19 @@ public class MyGame : Game
 		// Utils.print(GetDiagnostics());
 	}
 
-	public string MolecatToMake() {
+	public static void Text(string text, float x, float y, float size = 72)
+	{
+		Canvas.TextSize(size);
+		Canvas.TextAlign(CenterMode.Max, CenterMode.Max);
+		Canvas.NoStroke();
+		bool tryParse = SKColor.TryParse("#967CB5", out SKColor color);
+		if (!tryParse) Console.WriteLine("Could not parse color");
+		Canvas.Fill(new Colour(color));
+		Canvas.Text(text, x, y);
+	}
+	
+	public string MolecatToMake()
+	{
 		string MolecatToMake = "";
 		foreach(string k in PhysicsManager.Pairs.First().Keys)
 		{
