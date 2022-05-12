@@ -14,7 +14,7 @@ public class MyGame : Game
 {
 	public static float fElapsedTime = 0f;
 
-	private MyGame(int width, int height) : base(width, height, false, false)
+	private MyGame(int width, int height) : base(1920, 1080, false, false, width, height)
 	{
 		targetFps = 30; //time for a console game
 		Utils.print("MyGame initialized");
@@ -55,16 +55,16 @@ public class MyGame : Game
 			Console.WriteLine("Starting background infinite loop");
 		}
 
-		foreach(string k in PhysicsManager.Pairs.First().Keys)
-		{
-			Console.WriteLine(k);
-		}
+		// foreach(string k in PhysicsManager.Pairs.First().Keys)
+		// {
+		// 	Console.WriteLine(k);
+		// }
 
 		// Utils.print(GetDiagnostics());
 	}
 
 	private static void Main()
 	{
-		new MyGame(1920, 1080).Start();
+		new MyGame(1600, 900).Start();
 	}
 }

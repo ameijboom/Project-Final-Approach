@@ -2,6 +2,8 @@
 // Copyright (c) TechnicJelle. All rights reserved.
 // You're allowed to learn from this, but please do not simply copy.
 
+using PFA.GXPEngine;
+using PFA.GXPEngine.AddOns;
 using PFA.GXPEngine.LinAlg;
 using PFA.GXPEngine.Utils;
 using PFA.MyGame.CatomTypes;
@@ -34,29 +36,7 @@ public static class PhysicsManager
 		Game = (MyGame)GXPEngine.Game.main;
 		Box = Game.FindObjectOfType<Field>();
 
-		//TODO (Alwin): Revamp these spawn conditions depending on the required molecats
-		// for (int i = 0; i < BALLS; i++)
-		// {
-		// 	Vec2 spawnPos = RandomSpawnPos();
-		// 	Catom catom = Utils.Random(0, 6) switch
-		// 	{
-		// 		0 => new CatCalcium(spawnPos),
-		// 		1 => new CatCarbon(spawnPos),
-		// 		2 => new CatHydrogen(spawnPos),
-		// 		3 => new CatNitrogen(spawnPos),
-		// 		4 => new CatOxygen(spawnPos),
-		// 		5 => new CatPhosphorus(spawnPos),
-		// 		6 => new CatSodium(spawnPos),
-		// 		_ => throw new Exception("aa"),
-		// 	};
-
-		// 	AddBall(catom);
-		// }
-
 		SpawnCatoms();
-
-
-		Console.WriteLine(GXPEngine.Game.main.FindObjectOfType<Field>());
 
 		Vec2 topLeft = new(-LINE_RADIUS, -LINE_RADIUS);
 		Vec2 bottomRight = new(Box.width + LINE_RADIUS, Game.height + LINE_RADIUS);
@@ -67,7 +47,43 @@ public static class PhysicsManager
 		AddLine(topLeft, bottomLeft); //left
 		AddLine(bottomLeft, bottomRight); //bottom
 		AddLine(topRight, bottomRight); //right
+
+		MouseHandler mouseHandler = new(Game);
+		mouseHandler.OnMouseDown += OnMouseDown;
+		mouseHandler.OnMouseUp += OnMouseUp;
 	}
+
+	private static void OnMouseDown(GameObject target, MouseEventType type)
+	{
+#if DEBUG
+		Console.WriteLine("MouseDown");
+#endif
+		selectedBall = null;
+		foreach (Ball ball in Balls.Where(ball => Ball.IsPointInCircle(ball, Input.mouse)))
+		{
+			selectedBall = ball;
+			break;
+		}
+	}
+
+	private static void OnMouseUp(GameObject target, MouseEventType type)
+	{
+#if DEBUG
+		Console.WriteLine("MouseUp");
+#endif
+		if (selectedBall != null)
+		{
+			selectedBall.ApplyForce(SHOOT_FORCE * (selectedBall.CachedPosition - Input.mouse));
+
+			if (selectedBall is Catom catom)
+			{
+				catom.ReadyToCombine = true;
+			}
+		}
+
+		selectedBall = null;
+	}
+
 	private static void AddBall(Ball ball)
 	{
 		Balls.Add(ball);
@@ -90,48 +106,6 @@ public static class PhysicsManager
 		LineSegment line = new(start, end, LINE_RADIUS);
 		Lines.Add(line);
 		Game.AddChild(line);
-	}
-
-	private static void MouseBehaviour()
-	{
-		if (/*Input.GetMouseButtonDown(0) || */Input.GetMouseButtonDown(1))
-		{
-			selectedBall = null;
-			foreach (Ball ball in Balls.Where(ball => Ball.IsPointInCircle(ball, Input.mouse)))
-			{
-				selectedBall = ball;
-				break;
-			}
-		}
-
-		//Ball Dragging
-		// if (Input.GetMouseButton(0))
-		// {
-		// 	if (selectedBall != null)
-		// 	{
-		// 		selectedBall.position = Input.mouse;
-		// 	}
-		// }
-
-		//Ball Dragging
-		// if (Input.GetMouseButtonUp(0))
-		// {
-		// 	selectedBall = null;
-		// }
-
-		if (Input.GetMouseButtonUp(1))
-		{
-			if (selectedBall != null) {
-				selectedBall.ApplyForce(SHOOT_FORCE * (selectedBall.CachedPosition - Input.mouse));
-
-				if (selectedBall is Catom catom)
-				{
-					catom.ReadyToCombine = true;
-				}
-			}
-
-			selectedBall = null;
-		}
 	}
 
 	private static void PhysicsBehaviour()
@@ -384,8 +358,6 @@ public static class PhysicsManager
 
 	public static void Step()
 	{
-		MouseBehaviour();
-
 		PhysicsBehaviour();
 	}
 }
