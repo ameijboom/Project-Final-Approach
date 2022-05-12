@@ -19,7 +19,7 @@ public class MyGame : Game
 
 	private MyGame(int width, int height) : base(1920, 1080, false, false, width, height)
 	{
-		// targetFps = 30; //time for a console game
+		targetFps = 30; //time for a console game
 		Utils.print("MyGame initialized");
 
 		// Play Main Menu beginning music
@@ -71,8 +71,6 @@ public class MyGame : Game
 		// 	Console.WriteLine("Starting background infinite loop");
 		// }
 
-
-
 		// Utils.print(GetDiagnostics());
 	}
 
@@ -86,16 +84,16 @@ public class MyGame : Game
 		Canvas.Fill(new Colour(color));
 		Canvas.Text(text, x, y);
 	}
-	
-	public string MolecatToMake()
+
+	public static string MolecatToMake()
 	{
-		string MolecatToMake = "";
+		string molecatToMake = "";
 		foreach(string k in PhysicsManager.Pairs.First().Keys)
 		{
-			MolecatToMake+=k;
-			MolecatToMake+=PhysicsManager.Pairs.First()[k];
+			molecatToMake+=k;
+			molecatToMake+=PhysicsManager.Pairs.First()[k];
 		}
-		return MolecatToMake;
+		return molecatToMake;
 	}
 
 	private static void Main()

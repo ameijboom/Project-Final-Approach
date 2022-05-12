@@ -30,6 +30,7 @@ public static class PhysicsManager
 	private static readonly MyGame Game;
 	private static readonly Field Box;
 	private static readonly ICollection<string> Catoms = new List<string>() {"H", "O", "N", "C", "P", "Ca", "Na",};
+	private static HashSet<Catom> Molecat = new();
 	public static readonly List<Dictionary<string, int>> Pairs = Molecats.molecats;
 
 	static PhysicsManager()
@@ -230,23 +231,29 @@ public static class PhysicsManager
 							if (!Pairs.First().ContainsKey(cBall.Symbol) || !Pairs.First().ContainsKey(cTarget.Symbol))
 							{
 								System.Console.WriteLine(cTarget.Bros.Count);
-								bool bad = false;
-								foreach(Catom cm in Balls)
+								List<Catom> bad = new();
+								foreach (Catom cm in Balls.Cast<Catom>())
 								{
-									if (cm.Bros.Count != 0)
+									if (Molecat.Contains(cm))
 									{
+										// Molecat.Add(cm);
 										continue;
 									}
 
-									bad = true;
+									bad.Add(cm);
 								}
 
-								if (bad)
+								if (bad.Contains(cBall))
 								{
-									SoundManager.PlaySadCat();
 									RemoveBall(cBall);
+								}
+								else if (bad.Contains(cTarget))
+								{
 									RemoveBall(cTarget);
 								}
+
+								SoundManager.PlaySadCat();
+
 							} else
 							{
 								if (Pairs.First()[cBall.Symbol] != 1)
@@ -258,8 +265,11 @@ public static class PhysicsManager
 								}
 
 								SoundManager.PlayHappyCat();
+								Molecat.Add(cBall);
+								Molecat.Add(cTarget);
+
 							}
-							// SoundManager.PlayHappyCat();
+							SoundManager.PlayHappyCat();
 
 							if (!cTarget.Bros.Contains(cBall))
 							{
