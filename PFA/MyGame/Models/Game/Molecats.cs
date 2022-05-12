@@ -29,28 +29,28 @@ namespace PFA.MyGame.Models.Game
             BakingSoda.Add("C", 1);
             BakingSoda.Add("O", 3);
 
-            CarbonOxide.Add("C", 1);
-            CarbonOxide.Add("O", 2);
+			CarbonOxide.Add("C", 1);
+			CarbonOxide.Add("O", 2);
 
-            CarbonMonoxide.Add("C", 1);
-            CarbonMonoxide.Add("O", 1);
+			CarbonMonoxide.Add("C", 1);
+			CarbonMonoxide.Add("O", 1);
 
-            Phosphate.Add("P", 1);
-            Phosphate.Add("O", 4);
+			Phosphate.Add("P", 1);
+			Phosphate.Add("O", 4);
 
-            PhosphoricAcid.Add("H", 3);
-            PhosphoricAcid.Add("P", 1);
-            PhosphoricAcid.Add("O", 4);
+			PhosphoricAcid.Add("H", 3);
+			PhosphoricAcid.Add("P", 1);
+			PhosphoricAcid.Add("O", 4);
 
-            DiNitrogenTrioxide.Add("N", 2);
-            DiNitrogenTrioxide.Add("O", 3);
+			DiNitrogenTrioxide.Add("N", 2);
+			DiNitrogenTrioxide.Add("O", 3);
 
-            NitrogenDioxide.Add("N", 1);
-            NitrogenDioxide.Add("O", 2);
+			NitrogenDioxide.Add("N", 1);
+			NitrogenDioxide.Add("O", 2);
 
-            SodiumNitrate.Add("Na", 1);
-            SodiumNitrate.Add("N", 1);
-            SodiumNitrate.Add("O", 3);
+			SodiumNitrate.Add("Na", 1);
+			SodiumNitrate.Add("N", 1);
+			SodiumNitrate.Add("O", 3);
 
             molecats = new List<Dictionary<string, int>>() {
                 Water,
@@ -61,7 +61,7 @@ namespace PFA.MyGame.Models.Game
                 PhosphoricAcid,
                 DiNitrogenTrioxide,
                 NitrogenDioxide,
-                SodiumNitrate
+                SodiumNitrate,
             };
         }
 

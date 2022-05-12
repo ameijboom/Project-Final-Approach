@@ -70,6 +70,16 @@ public class Ball : Sprite
 		{
 			Velocity *= DRAG_FAC;
 		}
+
+		if (float.IsNaN(x))
+		{
+			x = game.width/2f;
+		}
+
+		if (float.IsNaN(y))
+		{
+			y = height/2f;
+		}
 	}
 
 	private void Render()

@@ -35,8 +35,8 @@ public class MyGame : Game
 		// Canvas.TextFont("Comic Sans MS", 72);
 		AddChild(Canvas);
 		Canvas.blendMode = BlendMode.PREMULTIPLIED;
-    
-		System.Console.WriteLine(MolecatToMake());
+
+		Console.WriteLine(MolecatToMake());
 
 	}
 

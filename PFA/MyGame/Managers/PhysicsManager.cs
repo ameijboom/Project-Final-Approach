@@ -100,7 +100,6 @@ public static class PhysicsManager
 	public static void RemoveBall(Ball ball)
 	{
 		BallsToRemove.Add(ball);
-		Game.RemoveChild(ball);
 	}
 
 	private static void AddLine(Vec2 start, Vec2 end)
@@ -216,9 +215,9 @@ public static class PhysicsManager
 						ball.CachedPosition -= fOverlap * (ball.CachedPosition - fakeBall.CachedPosition) / fDistance;
 					}
 
-                    foreach (Ball target in Balls)
+					foreach (Ball target in Balls)
 					{
-                        if (ball == target) continue;
+						if (ball == target) continue;
 						if (!Ball.DoCirclesOverlap(ball, target)) continue;
 
 						// Collision has occured
@@ -253,8 +252,8 @@ public static class PhysicsManager
 								}
 
 								SoundManager.PlaySadCat();
-
-							} else
+							}
+							else
 							{
 								if (Pairs.First()[cBall.Symbol] != 1)
 								{
@@ -383,11 +382,16 @@ public static class PhysicsManager
 	{
 		PhysicsBehaviour();
 
-        for (int i = BallsToRemove.Count - 1; i >= 0; i--)
+		for (int i = BallsToRemove.Count - 1; i >= 0; i--)
 		{
-            Ball ball = BallsToRemove[i];
-            Balls.Remove(ball);
+			Ball ball = BallsToRemove[i];
+			foreach (Catom catom in Balls.Cast<Catom>())
+			{
+				catom.Bros.Remove(ball);
+			}
+			Game.RemoveChild(ball);
 			BallsToRemove.Remove(ball);
+			Balls.Remove(ball);
 		}
 	}
 }
