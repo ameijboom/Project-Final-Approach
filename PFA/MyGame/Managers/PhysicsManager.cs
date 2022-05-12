@@ -21,6 +21,7 @@ public static class PhysicsManager
 	// private static LineSegment? _selectedLine = null;
 
 	private static readonly List<Ball> Balls = new();
+	private static List<Ball> BallsToRemove = new();
 	private static readonly List<LineSegment> Lines = new();
 	// private static bool _bSelectedLineStart = false;
 	private static Random rng = new Random();
@@ -56,7 +57,7 @@ public static class PhysicsManager
 	private static void OnMouseDown(GameObject target, MouseEventType type)
 	{
 #if DEBUG
-		Console.WriteLine("MouseDown");
+		// Console.WriteLine("MouseDown");
 #endif
 		selectedBall = null;
 		foreach (Ball ball in Balls.Where(ball => Ball.IsPointInCircle(ball, Input.mouse)))
@@ -69,7 +70,7 @@ public static class PhysicsManager
 	private static void OnMouseUp(GameObject target, MouseEventType type)
 	{
 #if DEBUG
-		Console.WriteLine("MouseUp");
+		// Console.WriteLine("MouseUp");
 #endif
 		if (selectedBall != null)
 		{
@@ -97,7 +98,7 @@ public static class PhysicsManager
 
 	public static void RemoveBall(Ball ball)
 	{
-		Balls.Remove(ball);
+		BallsToRemove.Add(ball);
 		Game.RemoveChild(ball);
 	}
 
@@ -214,9 +215,9 @@ public static class PhysicsManager
 						ball.CachedPosition -= fOverlap * (ball.CachedPosition - fakeBall.CachedPosition) / fDistance;
 					}
 
-					foreach (Ball target in Balls)
+                    foreach (Ball target in Balls)
 					{
-						if (ball == target) continue;
+                        if (ball == target) continue;
 						if (!Ball.DoCirclesOverlap(ball, target)) continue;
 
 						// Collision has occured
@@ -226,6 +227,38 @@ public static class PhysicsManager
 						Catom cTarget = (Catom) target;
 						if (cBall.ReadyToCombine || cTarget.ReadyToCombine)
 						{
+							if (!Pairs.First().ContainsKey(cBall.Symbol) || !Pairs.First().ContainsKey(cTarget.Symbol))
+							{
+								System.Console.WriteLine(cTarget.Bros.Count);
+								bool bad = false;
+								foreach(Catom cm in Balls)
+								{
+									if (cm.Bros.Count != 0)
+									{
+										continue;
+									}
+
+									bad = true;
+								}
+
+								if (bad)
+								{
+									SoundManager.PlaySadCat();
+									RemoveBall(cBall);
+									RemoveBall(cTarget);
+								}
+							} else
+							{
+								if (Pairs.First()[cBall.Symbol] != 1)
+								{
+									Pairs.First()[cBall.Symbol] -= 1;
+								} else
+								{
+									Pairs.First().Remove(cBall.Symbol);
+								}
+
+								SoundManager.PlayHappyCat();
+							}
 							// SoundManager.PlayHappyCat();
 
 							if (!cTarget.Bros.Contains(cBall))
@@ -239,26 +272,6 @@ public static class PhysicsManager
 								cBall.Bros.Add(cTarget);
 								cTarget.ReadyToCombine = false;
 							}
-
-							if (!Pairs.First().ContainsKey(cBall.Symbol) || !Pairs.First().ContainsKey(cTarget.Symbol))
-							{
-								SoundManager.PlaySadCat();
-								RemoveBall(cBall);
-								RemoveBall(cTarget);
-							} else
-							{
-								if (Pairs.First()[cBall.Symbol] != 1)
-								{
-									Pairs.First()[cBall.Symbol] -= 1;
-								} else
-								{
-									Pairs.First().Remove(cBall.Symbol);
-								}
-
-								SoundManager.PlayHappyCat();
-							}
-
-
 						}
 
 						// Make balls visually rotate
@@ -359,5 +372,12 @@ public static class PhysicsManager
 	public static void Step()
 	{
 		PhysicsBehaviour();
+
+        for (int i = BallsToRemove.Count - 1; i >= 0; i--)
+		{
+            Ball ball = BallsToRemove[i];
+            Balls.Remove(ball);
+			BallsToRemove.Remove(ball);
+		}
 	}
 }

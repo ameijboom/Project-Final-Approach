@@ -8,7 +8,7 @@ namespace PFA.MyGame.CatomTypes;
 
 public class CatCalcium : Catom
 {
-	private const float RADIUS = 194.0f;
+	private const float RADIUS = 175.0f;
 	private const float MASS = 40.08f;
 	private const float ATTRACTION_COEFFICIENT = 32f;
 

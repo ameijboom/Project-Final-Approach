@@ -19,11 +19,11 @@ public class MyGame : Game
 
 	private MyGame(int width, int height) : base(1920, 1080, false, false, width, height)
 	{
-		targetFps = 30; //time for a console game
+		// targetFps = 30; //time for a console game
 		Utils.print("MyGame initialized");
 
 		// Play Main Menu beginning music
-		SoundManager.PlayBackground(SoundManager.BGM.MmBegin);
+		SoundManager.PlayBackground(SoundManager.BGM.Game);
 
 		SceneManager.ShowScenes();
 		SceneManager.ActivateScene("main");
@@ -35,6 +35,9 @@ public class MyGame : Game
 		// Canvas.TextFont("Comic Sans MS", 72);
 		AddChild(Canvas);
 		Canvas.blendMode = BlendMode.PREMULTIPLIED;
+    
+		System.Console.WriteLine(MolecatToMake());
+
 	}
 
 	// ReSharper disable once UnusedMember.Local
@@ -61,17 +64,14 @@ public class MyGame : Game
 		}
 
 		// Play Main Menu infinite loop music
-		if (!SoundManager.GetBackground(SoundManager.BGM.MmBegin).IsPlaying()
-		    && !SoundManager.GetBackground(SoundManager.BGM.MmLoop).IsPlaying())
-		{
-			SoundManager.PlayBackground(SoundManager.BGM.MmLoop);
-			Console.WriteLine("Starting background infinite loop");
-		}
-
-		// foreach(string k in PhysicsManager.Pairs.First().Keys)
+		// if (!SoundManager.GetBackground(SoundManager.BGM.MmBegin).IsPlaying()
+		//     && !SoundManager.GetBackground(SoundManager.BGM.MmLoop).IsPlaying())
 		// {
-		// 	Console.WriteLine(k);
+		// 	SoundManager.PlayBackground(SoundManager.BGM.MmLoop);
+		// 	Console.WriteLine("Starting background infinite loop");
 		// }
+
+
 
 		// Utils.print(GetDiagnostics());
 	}
@@ -85,6 +85,17 @@ public class MyGame : Game
 		if (!tryParse) Console.WriteLine("Could not parse color");
 		Canvas.Fill(new Colour(color));
 		Canvas.Text(text, x, y);
+	}
+	
+	public string MolecatToMake()
+	{
+		string MolecatToMake = "";
+		foreach(string k in PhysicsManager.Pairs.First().Keys)
+		{
+			MolecatToMake+=k;
+			MolecatToMake+=PhysicsManager.Pairs.First()[k];
+		}
+		return MolecatToMake;
 	}
 
 	private static void Main()

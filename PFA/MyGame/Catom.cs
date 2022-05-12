@@ -11,7 +11,7 @@ namespace PFA.MyGame;
 
 public class Catom : Ball
 {
-	private const float RADIUS_FAC = 0.2f;
+	private const float RADIUS_FAC = 0.5f;
 	private const float SPACE_BETWEEN_CATOMS = 10f; // How far apart should the catoms try to be from each other?
 
 	public bool ReadyToCombine;
@@ -32,11 +32,7 @@ public class Catom : Ball
 		Colour = ReadyToCombine ? Colour.Fuchsia : Colour.White;
 		foreach (Ball bro in Bros)
 		{
-			Gizmos.DrawLine(
-				position + Vec2.Random() * (Radius / 2f),
-				bro.position + Vec2.Random() * (bro.Radius / 2f),
-				colour: new Colour(255, 127),
-				width: 1); //TODO: Designer overhaul necessary
+			Gizmos.DrawLine(position, bro.position, colour: new Colour(255, 164), width: 10);
 
 			Vec2 diff = bro.position - position;
 			ApplyForce(Force(diff.Mag(), Radius + bro.Radius + SPACE_BETWEEN_CATOMS) * diff.Normalized());
